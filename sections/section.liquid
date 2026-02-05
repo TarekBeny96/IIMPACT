@@ -1,80 +1,34 @@
-{%- liquid
+<section class="simple-section">
+  {% if section.settings.title != blank %}
+    <h2>{{ section.settings.title }}</h2>
+  {% endif %}
 
-  assign margin_top = section.settings.margin_top
-  assign margin_bottom = section.settings.margin_bottom
-  assign padding_top = section.settings.padding_top
-  assign padding_bottom = section.settings.padding_bottom
-  assign background-color = section.settings.background-color
-  
-  assign full_width = section.settings.full_width
-  assign content_width = section.settings.content_width
+  <div class="simple-text">
+    {{ section.settings.text }}
+  </div>
+</section>
 
-  assign border_thickness = section.settings.border_thickness
-  assign border_color = section.settings.border_color
-
-  assign ss-title = section.settings.ss-title
-  assign header_size =  section.settings.header_size 
-  assign header_color =  section.settings.header_color
-  assign header_align = section.settings.header_align
-  assign heading_custom = section.settings.heading_custom
-  assign heading_font = section.settings.heading_font
-  
-  assign sliders_mt = section.settings.sliders_mt
-  assign logo_padding_top = section.settings.logo_padding_top
-  assign logo_padding_bottom = section.settings.logo_padding_bottom
-  assign shadow = section.settings.shadow
-  assign scrolling_velocity = section.settings.scrolling_velocity
-  assign pause_hover = section.settings.pause_hover
-  assign slider-background-color = section.settings.slider-background-color
-  assign slider_gap_mobile = section.settings.slider_gap_mobile
-  assign slider_gap = section.settings.slider_gap
-  assign slider_direction = section.settings.slider_direction
-
-  assign icon_width =  section.settings.icon_width
-
--%}
-<style>
-
-  .section-{{ section.id }}-settings {
-    margin: 0 auto;
-    margin-top: {{ margin_top | times: 0.85 | round: 0 }}px;
-    margin-bottom: {{ margin_bottom | times: 0.85 | round: 0 }}px;
-    padding-top: var(--pt);
-    padding-bottom: var(--pb);
-    background: {{ background-color }};
-    border: {{ border_thickness }}px solid {{ border_color }};
-    {% unless full_width %}
-      max-width: {{ content_width }}rem;
-    {% endunless %}
-  }
-
-  @media screen and (min-width: 768px) {
-    .section-{{ section.id }}-padding {
-      margin-top: {{ margin_top }}px;
-      margin-bottom: {{ margin_bottom }}px;
-      padding-top: var(--pt-desktop);
-      padding-bottom: var(--pb-desktop);
+{% schema %}
+{
+  "name": "Section simple",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Bienvenue"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texte",
+      "default": "Ceci est une section simple."
     }
-  }
-</style>
-
-<style>
-
-  {{ heading_font | font_face: font_display: 'swap' }}
-  
-  .scrolling-logo-cloud_{{ section.id }} {
-    margin-top: {{ sliders_mt | times: 0.85 | round: 0 }}px;
-  }
-
-  .scrolling-logo-cloud-title-{{ section.id }} {
-    width: 100%;
-    margin: 0px;
-    text-align: {{ header_align }};
-    padding: 0 15px;
-    font-size:{{ header_size | times: 0.75 | round: 0 }}px;
-    color: {{ header_color }};
-  }
-  
-  .scrolling-logo-cloud_placeholder {
-    width:100%;
-  }
+  ],
+  "presets": [
+    {
+      "name": "Section simple"
+    }
+  ]
+}
+{% endschema %}
