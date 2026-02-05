@@ -1,33 +1,522 @@
-<section class="simple-section">
-  {% if section.settings.title != blank %}
-    <h2>{{ section.settings.title }}</h2>
-  {% endif %}
+{% comment %}
+  Section: Carrousel de Vidéos
+  Utilisation: Ajoutez cette section dans votre thème Shopify
+{% endcomment %}
 
-  <div class="simple-text">
-    {{ section.settings.text }}
+<div class="video-carousel-section" data-section-id="{{ section.id }}">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {% endif %}
+    
+    <div class="carousel-container">
+      <button class="carousel-button prev" onclick="scrollCarouselShopify('{{ section.id }}', 'prev')" aria-label="Précédent">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+          <path d="M8 2L2 8L8 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      
+      <div class="carousel-wrapper" id="carousel-{{ section.id }}">
+        {% for block in section.blocks %}
+          <div class="video-card" {{ block.shopify_attributes }}>
+            {% if block.settings.video != blank %}
+              <video 
+                muted 
+                loop 
+                playsinline
+                preload="metadata"
+                data-video-index="{{ forloop.index0 }}"
+                data-section-id="{{ section.id }}">
+                <source src="{{ block.settings.video }}" type="video/mp4">
+              </video>
+            {% elsif block.settings.video_url != blank %}
+              <video 
+                muted 
+                loop 
+                playsinline
+                preload="metadata"
+                data-video-index="{{ forloop.index0 }}"
+                data-section-id="{{ section.id }}">
+                <source src="{{ block.settings.video_url }}" type="video/mp4">
+              </video>
+            {% else %}
+              <div class="video-placeholder">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                  <circle cx="30" cy="30" r="28" fill="#e0e0e0"/>
+                  <path d="M25 20L40 30L25 40V20Z" fill="#999"/>
+                </svg>
+              </div>
+            {% endif %}
+            
+            <div class="video-overlay" onclick="openVideoModalShopify('{{ section.id }}', {{ forloop.index0 }})">
+              <button class="play-button" aria-label="Lire la vidéo"></button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="carousel-button next" onclick="scrollCarouselShopify('{{ section.id }}', 'next')" aria-label="Suivant">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+          <path d="M2 2L8 8L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
   </div>
-</section>
+</div>
+
+<!-- Modal pour lecture vidéo -->
+<div class="video-modal" id="video-modal-{{ section.id }}" data-section-id="{{ section.id }}">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeVideoModalShopify('{{ section.id }}')" aria-label="Fermer">×</button>
+    <video class="modal-video" id="modal-video-{{ section.id }}" controls playsinline>
+      <source src="" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<style>
+  .video-carousel-section {
+    padding: 60px 0;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .video-carousel-section .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .video-carousel-section .section-title {
+    text-align: center;
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 400;
+    margin-bottom: 40px;
+    color: {{ section.settings.title_color }};
+    font-family: {{ section.settings.title_font.family }}, sans-serif;
+  }
+
+  .video-carousel-section .carousel-container {
+    position: relative;
+    overflow: hidden;
+    padding: 0 60px;
+  }
+
+  .video-carousel-section .carousel-wrapper {
+    display: flex;
+    gap: {{ section.settings.card_spacing }}px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .video-carousel-section .carousel-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .video-carousel-section .video-card {
+    min-width: {{ section.settings.card_width }}px;
+    max-width: {{ section.settings.card_width }}px;
+    height: {{ section.settings.card_height }}px;
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .video-carousel-section .video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .video-carousel-section .video-card video,
+  .video-carousel-section .video-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+  }
+
+  .video-carousel-section .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+  }
+
+  .video-carousel-section .video-card:hover .video-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .video-carousel-section .play-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .video-carousel-section .play-button:hover {
+    transform: scale(1.15);
+    background: white;
+  }
+
+  .video-carousel-section .play-button::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 16px solid #333;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    margin-left: 4px;
+  }
+
+  .video-carousel-section .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+
+  .video-carousel-section .carousel-button:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .video-carousel-section .carousel-button.prev {
+    left: 0;
+  }
+
+  .video-carousel-section .carousel-button.next {
+    right: 0;
+  }
+
+  .video-carousel-section .carousel-button svg {
+    color: #333;
+  }
+
+  /* Modal */
+  .video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .video-modal.active {
+    display: flex;
+  }
+
+  .video-modal .modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+  }
+
+  .video-modal .modal-video {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 10px;
+  }
+
+  .video-modal .close-modal {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+
+  .video-modal .close-modal:hover {
+    transform: scale(1.1);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .video-carousel-section {
+      padding: 40px 0;
+    }
+
+    .video-carousel-section .carousel-container {
+      padding: 0 40px;
+    }
+
+    .video-carousel-section .video-card {
+      min-width: 240px;
+      max-width: 240px;
+      height: 360px;
+    }
+
+    .video-carousel-section .carousel-button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .video-carousel-section .section-title {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .video-carousel-section .play-button {
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .video-carousel-section .video-card {
+      min-width: 200px;
+      max-width: 200px;
+      height: 320px;
+    }
+  }
+</style>
+
+<script>
+  // Fonction pour faire défiler le carrousel Shopify
+  function scrollCarouselShopify(sectionId, direction) {
+    const carousel = document.getElementById('carousel-' + sectionId);
+    const scrollAmount = 320;
+    
+    if (direction === 'next') {
+      carousel.scrollLeft += scrollAmount;
+    } else {
+      carousel.scrollLeft -= scrollAmount;
+    }
+  }
+
+  // Ouvrir la modal avec la vidéo
+  function openVideoModalShopify(sectionId, index) {
+    const modal = document.getElementById('video-modal-' + sectionId);
+    const modalVideo = document.getElementById('modal-video-' + sectionId);
+    const videos = document.querySelectorAll([data-section-id="${sectionId}"] video[data-video-index]);
+    
+    if (videos[index]) {
+      const videoSrc = videos[index].querySelector('source').src;
+      modalVideo.querySelector('source').src = videoSrc;
+      modalVideo.load();
+      modal.classList.add('active');
+      modalVideo.play();
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  // Fermer la modal
+  function closeVideoModalShopify(sectionId) {
+    const modal = document.getElementById('video-modal-' + sectionId);
+    const modalVideo = document.getElementById('modal-video-' + sectionId);
+    
+    modal.classList.remove('active');
+    modalVideo.pause();
+    modalVideo.currentTime = 0;
+    document.body.style.overflow = '';
+  }
+
+  // Fermer en cliquant sur le fond
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('video-modal')) {
+      const sectionId = event.target.getAttribute('data-section-id');
+      closeVideoModalShopify(sectionId);
+    }
+  });
+
+  // Preview vidéo au survol
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.video-carousel-section .video-card').forEach(card => {
+      const video = card.querySelector('video');
+      
+      if (video) {
+        card.addEventListener('mouseenter', () => {
+          video.play().catch(err => console.log('Autoplay prevented'));
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          video.pause();
+          video.currentTime = 0;
+        });
+      }
+    });
+  });
+
+  // Support tactile pour mobile
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.carousel-wrapper').forEach(carousel => {
+      let startX;
+      
+      carousel.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      });
+      
+      carousel.addEventListener('touchmove', (e) => {
+        if (!startX) return;
+        
+        const currentX = e.touches[0].clientX;
+        const diff = startX - currentX;
+        
+        carousel.scrollLeft += diff;
+        startX = currentX;
+      });
+    });
+  });
+</script>
 
 {% schema %}
 {
-  "name": "Section simple",
+  "name": "Carrousel de Vidéos",
   "settings": [
     {
       "type": "text",
       "id": "title",
-      "label": "Titre",
-      "default": "Bienvenue"
+      "label": "Titre de la section",
+      "default": "Vous et notre marque"
     },
     {
-      "type": "textarea",
-      "id": "text",
-      "label": "Texte",
-      "default": "Ceci est une section simple."
+      "type": "range",
+      "id": "title_size",
+      "min": 18,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Taille du titre",
+      "default": 28
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Couleur du titre",
+      "default": "#333333"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Police du titre",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Couleur de fond",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 400,
+      "step": 20,
+      "unit": "px",
+      "label": "Largeur des cartes",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "min": 300,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "label": "Hauteur des cartes",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "card_spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement entre les cartes",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Arrondi des coins",
+      "default": 15
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vidéo",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Télécharger une vidéo"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "OU URL de la vidéo",
+          "info": "Si aucune vidéo n'est téléchargée, utilisez cette URL"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Section simple"
+      "name": "Carrousel de Vidéos",
+      "blocks": [
+        {
+          "type": "video"
+        },
+        {
+          "type": "video"
+        },
+        {
+          "type": "video"
+        }
+      ]
     }
   ]
 }
