@@ -1,39 +1,39 @@
 {% comment %}
-  CARROUSEL VIDÉOS - Tarek
-  Mobile: 200px × 200px
-  Desktop: 180px × 320px
+  CARROUSEL VIDÉOS - DIMENSIONS EXACTES MESURÉES
+  Mobile: 185px × 295px (mesuré sur screenshot Ceralyne)
+  Desktop: 270px × 410px
 {% endcomment %}
 
-<div class="video-carousel-Tarek" data-section-id="{{ section.id }}">
-  <div class="container-ceralyne">
+<div class="videoslider" data-section-id="{{ section.id }}">
+  <div class="videoslider-wrap">
     {% if section.settings.title != blank %}
-      <h2 class="title-ceralyne">{{ section.settings.title }}</h2>
+      <h2 class="videoslider-title">{{ section.settings.title }}</h2>
     {% endif %}
     
-    <div class="carousel-box">
-      <button class="btn-prev" onclick="scrollCarousel('{{ section.id }}', 'prev')">
+    <div class="videoslider-container">
+      <button class="videoslider-prev" onclick="slideVideo('{{ section.id }}', 'prev')">
         <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
-          <path d="M8 2L2 8L8 14" stroke="currentColor" stroke-width="2"/>
+          <path d="M8 2L2 8L8 14" stroke="#333" stroke-width="2"/>
         </svg>
       </button>
       
-      <div class="carousel-track" id="track-{{ section.id }}">
+      <div class="videoslider-scroll" id="scroll-{{ section.id }}">
         {% for block in section.blocks %}
-          <div class="video-item" {{ block.shopify_attributes }}>
+          <div class="videoslider-card">
             {% if block.settings.video != blank %}
               <video muted loop playsinline preload="metadata" 
-                     data-index="{{ forloop.index0 }}" 
-                     data-section="{{ section.id }}">
+                     data-vid="{{ forloop.index0 }}" 
+                     data-sec="{{ section.id }}">
                 <source src="{{ block.settings.video }}" type="video/mp4">
               </video>
             {% elsif block.settings.video_url != blank %}
               <video muted loop playsinline preload="metadata"
-                     data-index="{{ forloop.index0 }}" 
-                     data-section="{{ section.id }}">
+                     data-vid="{{ forloop.index0 }}" 
+                     data-sec="{{ section.id }}">
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
               </video>
             {% else %}
-              <div class="video-empty">
+              <div class="videoslider-placeholder">
                 <svg width="50" height="50" viewBox="0 0 50 50">
                   <circle cx="25" cy="25" r="23" fill="#ddd"/>
                   <path d="M20 15L35 25L20 35V15Z" fill="#999"/>
@@ -41,95 +41,91 @@
               </div>
             {% endif %}
             
-            <div class="video-layer" onclick="openModal('{{ section.id }}', {{ forloop.index0 }})">
-              <button class="btn-play"></button>
+            <div class="videoslider-overlay" onclick="playFullVideo('{{ section.id }}', {{ forloop.index0 }})">
+              <div class="videoslider-playbtn"></div>
             </div>
           </div>
         {% endfor %}
       </div>
 
-      <button class="btn-next" onclick="scrollCarousel('{{ section.id }}', 'next')">
+      <button class="videoslider-next" onclick="slideVideo('{{ section.id }}', 'next')">
         <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
-          <path d="M2 2L8 8L2 14" stroke="currentColor" stroke-width="2"/>
+          <path d="M2 2L8 8L2 14" stroke="#333" stroke-width="2"/>
         </svg>
       </button>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="video-modal-ceralyne" id="modal-{{ section.id }}" data-section="{{ section.id }}">
-  <div class="modal-box">
-    <button class="btn-close" onclick="closeModal('{{ section.id }}')">×</button>
-    <video class="modal-player" id="player-{{ section.id }}" controls playsinline>
+<div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}">
+  <div class="videoslider-modalbox">
+    <button class="videoslider-close" onclick="closeFullVideo('{{ section.id }}')">×</button>
+    <video class="videoslider-player" id="video-{{ section.id }}" controls playsinline>
       <source src="" type="video/mp4">
     </video>
   </div>
 </div>
 
 <style>
-  /* SECTION PRINCIPALE */
-  .video-carousel-ceralyne {
-    padding: px 0;
+  .videoslider {
+    padding: 30px 0;
     background: {{ section.settings.background_color }};
   }
 
-  .container-ceralyne {
+  .videoslider-wrap {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 15px;
   }
 
-  .title-ceralyne {
+  .videoslider-title {
     text-align: center;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 300;
-    margin-bottom: 25px;
+    margin-bottom: 24px;
     color: {{ section.settings.title_color }};
     font-family: {{ section.settings.title_font.family }}, sans-serif;
   }
 
-  .carousel-box {
+  .videoslider-container {
     position: relative;
-    overflow: hidden;
-    padding: 0 45px;
+    padding: 0 40px;
   }
 
-  .carousel-track {
+  .videoslider-scroll {
     display: flex;
     gap: 12px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 8px 0;
   }
 
-  .carousel-track::-webkit-scrollbar {
+  .videoslider-scroll::-webkit-scrollbar {
     display: none;
   }
 
-  /* VIDÉOS DESKTOP */
-  .video-item {
-    min-width: 280px;
-    max-width: 280px;
-    height: 420px;
-    border-radius: 14px;
+  /* DESKTOP */
+  .videoslider-card {
+    min-width: 270px;
+    width: 270px;
+    height: 410px;
+    border-radius: 15px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.25s ease;
   }
 
-  .video-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+  .videoslider-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   }
 
-  .video-item video,
-  .video-empty {
+  .videoslider-card video,
+  .videoslider-placeholder {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -139,9 +135,12 @@
     justify-content: center;
   }
 
-  .video-layer {
+  .videoslider-overlay {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
@@ -149,48 +148,44 @@
     transition: background 0.3s;
   }
 
-  .video-item:hover .video-layer {
-    background: rgba(0,0,0,0.35);
+  .videoslider-card:hover .videoslider-overlay {
+    background: rgba(0,0,0,0.3);
   }
 
-  /* BOUTON PLAY */
-  .btn-play {
-    width: 65px;
-    height: 65px;
+  .videoslider-playbtn {
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: rgba(255,255,255,0.95);
-    border: none;
-    cursor: pointer;
     position: relative;
     transition: all 0.3s;
   }
 
-  .btn-play:hover {
+  .videoslider-playbtn:hover {
     transform: scale(1.1);
     background: white;
   }
 
-  .btn-play::after {
+  .videoslider-playbtn::after {
     content: '';
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-40%, -50%);
+    transform: translate(-38%, -50%);
     width: 0;
     height: 0;
-    border-left: 18px solid #333;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
+    border-left: 16px solid #333;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
   }
 
-  /* BOUTONS NAVIGATION */
-  .btn-prev,
-  .btn-next {
+  .videoslider-prev,
+  .videoslider-next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: white;
     border: none;
@@ -198,64 +193,61 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     z-index: 10;
-    transition: all 0.3s;
+    transition: all 0.25s;
   }
 
-  .btn-prev:hover,
-  .btn-next:hover {
+  .videoslider-prev:hover,
+  .videoslider-next:hover {
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.18);
   }
 
-  .btn-prev { left: 0; }
-  .btn-next { right: 0; }
+  .videoslider-prev { left: 0; }
+  .videoslider-next { right: 0; }
 
-  .btn-prev svg,
-  .btn-next svg {
-    color: #333;
-  }
-
-  /* MODAL */
-  .video-modal-ceralyne {
+  .videoslider-modal {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0,0,0,0.95);
-    z-index: 9999;
+    z-index: 99999;
     align-items: center;
     justify-content: center;
     padding: 20px;
   }
 
-  .video-modal-ceralyne.active {
+  .videoslider-modal.show {
     display: flex;
   }
 
-  .modal-box {
+  .videoslider-modalbox {
     position: relative;
     max-width: 90%;
     max-height: 90vh;
   }
 
-  .modal-player {
+  .videoslider-player {
     max-width: 100%;
     max-height: 90vh;
-    border-radius: 12px;
+    border-radius: 10px;
   }
 
-  .btn-close {
+  .videoslider-close {
     position: absolute;
-    top: -50px;
+    top: -48px;
     right: 0;
     background: white;
     border: none;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 300;
     display: flex;
     align-items: center;
@@ -263,203 +255,161 @@
     transition: transform 0.2s;
   }
 
-  .btn-close:hover {
+  .videoslider-close:hover {
     transform: scale(1.1);
   }
 
-  /* 📱 MOBILE - DIMENSIONS EXACTES CERALYNE */
+  /* 📱 MOBILE - DIMENSIONS EXACTES 185×295 */
   @media (max-width: 768px) {
-    .video-carousel-ceralyne {
-      padding: 28px 0;
+    .videoslider {
+      padding: 26px 0;
     }
 
-    .title-ceralyne {
+    .videoslider-title {
       font-size: 20px;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
-    .carousel-box {
-      padding: 0 32px;
+    .videoslider-container {
+      padding: 0 28px;
     }
 
-    /* 🎯 DIMENSIONS EXACTES CERALYNE MOBILE */
-    .video-item {
-      min-width: 190px;
-      max-width: 190px;
-      height: 300px;
+    /* 🎯 EXACTEMENT 185px × 295px comme Ceralyne */
+    .videoslider-card {
+      min-width: 185px;
+      width: 185px;
+      height: 295px;
       border-radius: 12px;
     }
 
-    .carousel-track {
+    .videoslider-scroll {
       gap: 10px;
-      padding: 5px 0;
     }
 
-    .btn-prev,
-    .btn-next {
-      width: 36px;
-      height: 36px;
+    .videoslider-prev,
+    .videoslider-next {
+      width: 34px;
+      height: 34px;
     }
 
-    .btn-prev svg,
-    .btn-next svg {
+    .videoslider-prev svg,
+    .videoslider-next svg {
       width: 8px;
       height: 13px;
     }
 
-    .btn-play {
-      width: 52px;
-      height: 52px;
+    .videoslider-playbtn {
+      width: 50px;
+      height: 50px;
     }
 
-    .btn-play::after {
-      border-left: 15px solid #333;
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
+    .videoslider-playbtn::after {
+      border-left: 14px solid #333;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
     }
 
-    .video-item:active {
-      transform: scale(0.97);
+    .videoslider-card:active {
+      transform: scale(0.96);
     }
 
-    .btn-close {
-      top: -45px;
-      width: 38px;
-      height: 38px;
-      font-size: 22px;
+    .videoslider-close {
+      top: -42px;
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
     }
   }
 
-  /* Petits mobiles */
   @media (max-width: 400px) {
-    .carousel-box {
-      padding: 0 25px;
+    .videoslider-container {
+      padding: 0 22px;
     }
 
-    .video-item {
+    .videoslider-card {
       min-width: 170px;
-      max-width: 170px;
+      width: 170px;
       height: 270px;
-    }
-
-    .btn-prev,
-    .btn-next {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
-  /* Tablettes */
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .video-item {
-      min-width: 230px;
-      max-width: 230px;
-      height: 360px;
     }
   }
 </style>
 
 <script>
-  // Scroll du carrousel
-  function scrollCarousel(sectionId, direction) {
-    const track = document.getElementById('track-' + sectionId);
-    const isMobile = window.innerWidth <= 768;
-    const distance = isMobile ? 200 : 300;
-    
-    track.scrollLeft += (direction === 'next' ? distance : -distance);
+  function slideVideo(secId, dir) {
+    const scroll = document.getElementById('scroll-' + secId);
+    const mobile = window.innerWidth <= 768;
+    const dist = mobile ? 195 : 282;
+    scroll.scrollLeft += (dir === 'next' ? dist : -dist);
   }
 
-  // Ouvrir modal
-  function openModal(sectionId, index) {
-    const modal = document.getElementById('modal-' + sectionId);
-    const player = document.getElementById('player-' + sectionId);
-    const videos = document.querySelectorAll(`[data-section="${sectionId}"] video[data-index]`);
+  function playFullVideo(secId, idx) {
+    const modal = document.getElementById('modal-' + secId);
+    const player = document.getElementById('video-' + secId);
+    const vids = document.querySelectorAll(`[data-sec="${secId}"] video[data-vid]`);
     
-    if (videos[index]) {
-      const src = videos[index].querySelector('source').src;
-      player.querySelector('source').src = src;
+    if (vids[idx]) {
+      player.querySelector('source').src = vids[idx].querySelector('source').src;
       player.load();
-      modal.classList.add('active');
-      player.play().catch(e => console.log('Autoplay:', e));
+      modal.classList.add('show');
+      player.play().catch(() => {});
       document.body.style.overflow = 'hidden';
     }
   }
 
-  // Fermer modal
-  function closeModal(sectionId) {
-    const modal = document.getElementById('modal-' + sectionId);
-    const player = document.getElementById('player-' + sectionId);
-    
-    modal.classList.remove('active');
+  function closeFullVideo(secId) {
+    const modal = document.getElementById('modal-' + secId);
+    const player = document.getElementById('video-' + secId);
+    modal.classList.remove('show');
     player.pause();
     player.currentTime = 0;
     document.body.style.overflow = '';
   }
 
-  // Setup listeners
   document.addEventListener('DOMContentLoaded', function() {
-    // Fermer modal au clic sur fond
-    document.querySelectorAll('.video-modal-ceralyne').forEach(modal => {
-      modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-          const sectionId = this.getAttribute('data-section');
-          closeModal(sectionId);
-        }
+    document.querySelectorAll('.videoslider-modal').forEach(m => {
+      m.addEventListener('click', e => {
+        if (e.target === m) closeFullVideo(m.getAttribute('data-sec'));
       });
     });
 
-    // Fermer avec Escape
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        const active = document.querySelector('.video-modal-ceralyne.active');
-        if (active) closeModal(active.getAttribute('data-section'));
+        const active = document.querySelector('.videoslider-modal.show');
+        if (active) closeFullVideo(active.getAttribute('data-sec'));
       }
     });
 
-    // Preview hover (desktop uniquement)
     if (window.innerWidth > 768) {
-      document.querySelectorAll('.video-item').forEach(item => {
-        const video = item.querySelector('video');
-        if (video) {
-          item.addEventListener('mouseenter', () => {
-            video.play().catch(() => {});
-          });
-          item.addEventListener('mouseleave', () => {
-            video.pause();
-            video.currentTime = 0;
-          });
+      document.querySelectorAll('.videoslider-card').forEach(card => {
+        const vid = card.querySelector('video');
+        if (vid) {
+          card.addEventListener('mouseenter', () => vid.play().catch(() => {}));
+          card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
         }
       });
     }
 
-    // Swipe mobile
-    document.querySelectorAll('.carousel-track').forEach(track => {
-      let startX, scrollLeft, isDragging = false;
-      
-      track.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startX = e.touches[0].pageX - track.offsetLeft;
-        scrollLeft = track.scrollLeft;
+    document.querySelectorAll('.videoslider-scroll').forEach(scr => {
+      let stX, scL, drag = false;
+      scr.addEventListener('touchstart', e => {
+        drag = true;
+        stX = e.touches[0].pageX - scr.offsetLeft;
+        scL = scr.scrollLeft;
       });
-      
-      track.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
+      scr.addEventListener('touchmove', e => {
+        if (!drag) return;
         e.preventDefault();
-        const x = e.touches[0].pageX - track.offsetLeft;
-        const walk = (x - startX) * 1.5;
-        track.scrollLeft = scrollLeft - walk;
+        const x = e.touches[0].pageX - scr.offsetLeft;
+        scr.scrollLeft = scL - (x - stX) * 1.5;
       });
-      
-      track.addEventListener('touchend', () => {
-        isDragging = false;
-      });
+      scr.addEventListener('touchend', () => drag = false);
     });
   });
 </script>
 
 {% schema %}
 {
-  "name": "Carrousel Vidéos Ceralyne",
+  "name": "Carrousel Vidéos",
   "settings": [
     {
       "type": "text",
@@ -506,7 +456,7 @@
   ],
   "presets": [
     {
-      "name": "Carrousel Vidéos Ceralyne",
+      "name": "Carrousel Vidéos",
       "blocks": [
         { "type": "video" },
         { "type": "video" },
