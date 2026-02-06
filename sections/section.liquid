@@ -1,6 +1,6 @@
 {% comment %}
-  Section: Carrousel de Vidéos - 
-  Mobile: 200px x 310px (comme sur la photo)
+  Section: Carrousel de Vidéos - Dimensions exactes Ceralyne
+  Mobile: 180px x 280px (comme sur la photo)
   Desktop: 280px x 400px
 {% endcomment %}
 
@@ -118,9 +118,9 @@
 
   /* DESKTOP - Plus grandes vidéos */
   .video-carousel-section .video-card {
-    min-width: 80px;
-    max-width: 180px;
-    height: 300px;
+    min-width: 280px;
+    max-width: 280px;
+    height: 400px;
     border-radius: 15px;
     overflow: hidden;
     position: relative;
@@ -137,8 +137,8 @@
 
   .video-carousel-section .video-card video,
   .video-carousel-section .video-placeholder {
-    width: 50%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: flex;
     align-items: center;
@@ -279,53 +279,53 @@
     transform: scale(1.1);
   }
 
-  /* MOBILE - Dimensions exactes comme Ceralyne (180px x 280px) */
+  /* MOBILE - Dimensions EXACTES Ceralyne (petites vidéos comme sur la photo) */
   @media (max-width: 768px) {
     .video-carousel-section {
-      padding: 30px 0;
+      padding: 25px 0;
     }
 
     .video-carousel-section .section-title {
-      font-size: 22px;
-      margin-bottom: 25px;
+      font-size: 20px;
+      margin-bottom: 20px;
       padding: 0 15px;
     }
 
     .video-carousel-section .carousel-container {
-      padding: 0 35px;
+      padding: 0 30px;
     }
 
-    /* DIMENSIONS EXACTES CERALYNE MOBILE */
+    /* DIMENSIONS EXACTES CERALYNE MOBILE - PETITES VIDÉOS */
     .video-carousel-section .video-card {
-      min-width: 180px;
-      max-width: 180px;
-      height: 280px;
-      border-radius: 12px;
+      min-width: 160px;
+      max-width: 160px;
+      height: 250px;
+      border-radius: 10px;
     }
 
     .video-carousel-section .carousel-wrapper {
-      gap: 10px;
+      gap: 8px;
     }
 
     .video-carousel-section .carousel-button {
-      width: 35px;
-      height: 35px;
+      width: 32px;
+      height: 32px;
     }
 
     .video-carousel-section .carousel-button svg {
-      width: 8px;
-      height: 14px;
+      width: 7px;
+      height: 12px;
     }
 
     .video-carousel-section .play-button {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
     }
 
     .video-carousel-section .play-button::after {
-      border-left: 14px solid #333;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
+      border-left: 12px solid #333;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
     }
 
     .video-carousel-section .video-card:active {
@@ -343,18 +343,18 @@
   /* Très petits mobiles */
   @media (max-width: 400px) {
     .video-carousel-section .carousel-container {
-      padding: 0 25px;
+      padding: 0 20px;
     }
 
     .video-carousel-section .video-card {
-      min-width: 165px;
-      max-width: 165px;
-      height: 260px;
+      min-width: 145px;
+      max-width: 145px;
+      height: 230px;
     }
 
     .video-carousel-section .carousel-button {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
     }
   }
 
@@ -373,9 +373,9 @@
   function scrollCarouselShopify(sectionId, direction) {
     const carousel = document.getElementById('carousel-' + sectionId);
     
-    // Détection mobile pour adapter la distance de scroll
+    // Détection mobile pour adapter la distance de scroll (petites vidéos)
     const isMobile = window.innerWidth <= 768;
-    const scrollAmount = isMobile ? 200 : 300;
+    const scrollAmount = isMobile ? 170 : 300; // Plus petit pour mobile
     
     if (direction === 'next') {
       carousel.scrollLeft += scrollAmount;
