@@ -1,7 +1,7 @@
 {% comment %}
-  CARROUSEL VIDÉOS - DIMENSIONS EXACTES
-  Mobile: 185px × 295px
-  Desktop: 270px × 410px
+  CARROUSEL VIDÉOS - DIMENSIONS /2 + ENCADRÉ
+  Mobile (approx /2): 93px × 148px
+  Desktop (/2): 135px × 205px
 {% endcomment %}
 
 <div class="videoslider" data-section-id="{{ section.id }}">
@@ -11,8 +11,8 @@
     {% endif %}
     
     <div class="videoslider-container">
-      <button class="videoslider-prev" type="button" onclick="slideVideo('{{ section.id }}', 'prev')">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
+      <button class="videoslider-prev" onclick="slideVideo('{{ section.id }}', 'prev')">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
           <path d="M8 2L2 8L8 14" stroke="#333" stroke-width="2"/>
         </svg>
       </button>
@@ -21,33 +21,35 @@
         {% for block in section.blocks %}
           <div class="videoslider-card">
             {% if block.settings.video != blank %}
-              <video muted loop playsinline preload="metadata" data-vid="{{ forloop.index0 }}" data-sec="{{ section.id }}">
+              <video muted loop playsinline preload="metadata" 
+                     data-vid="{{ forloop.index0 }}" 
+                     data-sec="{{ section.id }}">
                 <source src="{{ block.settings.video }}" type="video/mp4">
               </video>
             {% elsif block.settings.video_url != blank %}
-              <video muted loop playsinline preload="metadata" data-vid="{{ forloop.index0 }}" data-sec="{{ section.id }}">
+              <video muted loop playsinline preload="metadata"
+                     data-vid="{{ forloop.index0 }}" 
+                     data-sec="{{ section.id }}">
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
               </video>
             {% else %}
               <div class="videoslider-placeholder">
-                <svg width="50" height="50" viewBox="0 0 50 50" aria-hidden="true">
+                <svg width="50" height="50" viewBox="0 0 50 50">
                   <circle cx="25" cy="25" r="23" fill="#ddd"/>
                   <path d="M20 15L35 25L20 35V15Z" fill="#999"/>
                 </svg>
               </div>
             {% endif %}
             
-            <div class="videoslider-overlay" role="button" tabindex="0"
-                 onclick="openVideoModal('{{ section.id }}', {{ forloop.index0 }})"
-                 onkeydown="if(event.key==='Enter'||event.key===' ') openVideoModal('{{ section.id }}', {{ forloop.index0 }})">
+            <div class="videoslider-overlay" onclick="playFullVideo('{{ section.id }}', {{ forloop.index0 }})">
               <div class="videoslider-playbtn"></div>
             </div>
           </div>
         {% endfor %}
       </div>
 
-      <button class="videoslider-next" type="button" onclick="slideVideo('{{ section.id }}', 'next')">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
+      <button class="videoslider-next" onclick="slideVideo('{{ section.id }}', 'next')">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
           <path d="M2 2L8 8L2 14" stroke="#333" stroke-width="2"/>
         </svg>
       </button>
@@ -55,28 +57,12 @@
   </div>
 </div>
 
-<!-- MODAL (grand) + navigation -->
-<div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}" aria-hidden="true">
+<div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}">
   <div class="videoslider-modalbox">
-    <button class="videoslider-close" type="button" onclick="closeVideoModal('{{ section.id }}')" aria-label="Fermer">×</button>
-
-    <button class="videoslider-modal-prev" type="button" onclick="modalNav('{{ section.id }}','prev')" aria-label="Vidéo précédente">
-      <svg width="12" height="18" viewBox="0 0 10 16" fill="none" aria-hidden="true">
-        <path d="M8 2L2 8L8 14" stroke="#fff" stroke-width="2"/>
-      </svg>
-    </button>
-
-    <div class="videoslider-modalstage" id="stage-{{ section.id }}">
-      <video class="videoslider-player" id="video-{{ section.id }}" controls playsinline>
-        <source src="" type="video/mp4">
-      </video>
-    </div>
-
-    <button class="videoslider-modal-next" type="button" onclick="modalNav('{{ section.id }}','next')" aria-label="Vidéo suivante">
-      <svg width="12" height="18" viewBox="0 0 10 16" fill="none" aria-hidden="true">
-        <path d="M2 2L8 8L2 14" stroke="#fff" stroke-width="2"/>
-      </svg>
-    </button>
+    <button class="videoslider-close" onclick="closeFullVideo('{{ section.id }}')">×</button>
+    <video class="videoslider-player" id="video-{{ section.id }}" controls playsinline>
+      <source src="" type="video/mp4">
+    </video>
   </div>
 </div>
 
@@ -119,25 +105,31 @@
     display: none;
   }
 
-  /* DESKTOP - DIMENSIONS EXACTES */
+  /* DESKTOP - /2 + encadré */
   .videoslider-card {
-    min-width: 270px;
-    width: 270px;
-    height: 410px;
+    min-width: 135px;
+    width: 135px;
+    height: 205px;
 
-    border-radius: 15px;
-    overflow: hidden;
+    border-radius: 14px;
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    /* encadré */
+    box-sizing: border-box;
+    padding: 6px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+    transition: all 0.25s ease;
+    overflow: hidden;
   }
 
   .videoslider-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 7px 18px rgba(0,0,0,0.14);
   }
 
   .videoslider-card video,
@@ -145,20 +137,28 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+
     background: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 10px; /* arrondi intérieur (cadre + contenu) */
   }
 
   .videoslider-overlay {
     position: absolute;
-    inset: 0;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border-radius: 10px;
+
     background: rgba(0,0,0,0.18);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.25s ease;
+    transition: background 0.3s;
   }
 
   .videoslider-card:hover .videoslider-overlay {
@@ -166,16 +166,17 @@
   }
 
   .videoslider-playbtn {
-    width: 60px;
-    height: 60px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.96);
     position: relative;
-    transition: transform 0.25s ease;
+    transition: all 0.3s;
   }
 
   .videoslider-playbtn:hover {
     transform: scale(1.08);
+    background: #fff;
   }
 
   .videoslider-playbtn::after {
@@ -186,9 +187,9 @@
     transform: translate(-38%, -50%);
     width: 0;
     height: 0;
-    border-left: 16px solid #333;
-    border-top: 11px solid transparent;
-    border-bottom: 11px solid transparent;
+    border-left: 12px solid #333;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
   }
 
   .videoslider-prev,
@@ -207,7 +208,7 @@
     justify-content: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     z-index: 10;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.25s;
   }
 
   .videoslider-prev:hover,
@@ -219,42 +220,34 @@
   .videoslider-prev { left: 0; }
   .videoslider-next { right: 0; }
 
-  /* MODAL */
   .videoslider-modal {
     display: none;
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.92);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.95);
     z-index: 99999;
     align-items: center;
     justify-content: center;
-    padding: 18px;
+    padding: 20px;
   }
 
-  .videoslider-modal.show { display: flex; }
+  .videoslider-modal.show {
+    display: flex;
+  }
 
   .videoslider-modalbox {
     position: relative;
-    width: min(980px, 94vw);
+    max-width: 90%;
     max-height: 90vh;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .videoslider-modalstage {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    touch-action: pan-y;
   }
 
   .videoslider-player {
-    width: 100%;
-    max-height: 84vh;
-    border-radius: 12px;
-    background: #000;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 10px;
   }
 
   .videoslider-close {
@@ -275,31 +268,241 @@
     transition: transform 0.2s;
   }
 
-  .videoslider-close:hover { transform: scale(1.08); }
-
-  .videoslider-modal-prev,
-  .videoslider-modal-next {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.22);
-    background: rgba(255,255,255,0.12);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease, background 0.2s ease;
+  .videoslider-close:hover {
+    transform: scale(1.1);
   }
 
-  .videoslider-modal-prev:hover,
-  .videoslider-modal-next:hover {
-    transform: scale(1.06);
-    background: rgba(255,255,255,0.18);
-  }
-
-  /* 📱 MOBILE - DIMENSIONS EXACTES 185×295 */
+  /* 📱 MOBILE - /2 + encadré */
   @media (max-width: 768px) {
-    .videoslider { padding: 26px 0; }
-    .videoslider-title { font-size: 20px; margin
+    .videoslider {
+      padding: 26px 0;
+    }
+
+    .videoslider-title {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .videoslider-container {
+      padding: 0 28px;
+    }
+
+    .videoslider-card {
+      min-width: 93px;
+      width: 93px;
+      height: 148px;
+
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .videoslider-card video,
+    .videoslider-placeholder,
+    .videoslider-overlay {
+      border-radius: 9px;
+    }
+
+    .videoslider-overlay {
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+    }
+
+    .videoslider-scroll {
+      gap: 10px;
+    }
+
+    .videoslider-prev,
+    .videoslider-next {
+      width: 34px;
+      height: 34px;
+    }
+
+    .videoslider-prev svg,
+    .videoslider-next svg {
+      width: 8px;
+      height: 13px;
+    }
+
+    .videoslider-playbtn {
+      width: 34px;
+      height: 34px;
+    }
+
+    .videoslider-playbtn::after {
+      border-left: 10px solid #333;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+    }
+
+    .videoslider-card:active {
+      transform: scale(0.97);
+    }
+
+    .videoslider-close {
+      top: -42px;
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .videoslider-container {
+      padding: 0 22px;
+    }
+
+    .videoslider-card {
+      min-width: 86px;
+      width: 86px;
+      height: 136px;
+    }
+  }
+</style>
+
+<script>
+  function getSlideDistance(scrollEl) {
+    const firstCard = scrollEl.querySelector('.videoslider-card');
+    if (!firstCard) return 0;
+
+    const cardW = firstCard.getBoundingClientRect().width;
+    const gapStr = getComputedStyle(scrollEl).gap || '0px';
+    const gap = parseFloat(gapStr) || 0;
+
+    return cardW + gap;
+  }
+
+  function slideVideo(secId, dir) {
+    const scroll = document.getElementById('scroll-' + secId);
+    const dist = getSlideDistance(scroll) || 0;
+    scroll.scrollLeft += (dir === 'next' ? dist : -dist);
+  }
+
+  function playFullVideo(secId, idx) {
+    const modal = document.getElementById('modal-' + secId);
+    const player = document.getElementById('video-' + secId);
+    const vids = document.querySelectorAll(`[data-sec="${secId}"] video[data-vid]`);
+    
+    if (vids[idx]) {
+      player.querySelector('source').src = vids[idx].querySelector('source').src;
+      player.load();
+      modal.classList.add('show');
+      player.play().catch(() => {});
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeFullVideo(secId) {
+    const modal = document.getElementById('modal-' + secId);
+    const player = document.getElementById('video-' + secId);
+    modal.classList.remove('show');
+    player.pause();
+    player.currentTime = 0;
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.videoslider-modal').forEach(m => {
+      m.addEventListener('click', e => {
+        if (e.target === m) closeFullVideo(m.getAttribute('data-sec'));
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const active = document.querySelector('.videoslider-modal.show');
+        if (active) closeFullVideo(active.getAttribute('data-sec'));
+      }
+    });
+
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.videoslider-card').forEach(card => {
+        const vid = card.querySelector('video');
+        if (vid) {
+          card.addEventListener('mouseenter', () => vid.play().catch(() => {}));
+          card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+        }
+      });
+    }
+
+    document.querySelectorAll('.videoslider-scroll').forEach(scr => {
+      let stX, scL, drag = false;
+      scr.addEventListener('touchstart', e => {
+        drag = true;
+        stX = e.touches[0].pageX - scr.offsetLeft;
+        scL = scr.scrollLeft;
+      });
+      scr.addEventListener('touchmove', e => {
+        if (!drag) return;
+        e.preventDefault();
+        const x = e.touches[0].pageX - scr.offsetLeft;
+        scr.scrollLeft = scL - (x - stX) * 1.5;
+      });
+      scr.addEventListener('touchend', () => drag = false);
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Carrousel Vidéos",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Vous et notre marque"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Couleur titre",
+      "default": "#333333"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Police titre",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Fond",
+      "default": "#f5f5f5"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vidéo",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Vidéo"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "OU URL vidéo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carrousel Vidéos",
+      "blocks": [
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
 
 
