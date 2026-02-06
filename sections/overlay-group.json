@@ -53,12 +53,62 @@
         "search_menu": "",
         "search_menu_show_title": true
       }
+    },
+    "section_KLzggT": {
+      "type": "section",
+      "blocks": {
+        "video_WHHK9C": {
+          "type": "video",
+          "settings": {
+            "video_url": ""
+          }
+        },
+        "video_JnUcBm": {
+          "type": "video",
+          "settings": {
+            "video_url": ""
+          }
+        },
+        "video_yYkDLa": {
+          "type": "video",
+          "settings": {
+            "video_url": ""
+          }
+        },
+        "video_UCwtJn": {
+          "type": "video",
+          "settings": {
+            "video_url": ""
+          }
+        },
+        "video_zRqGL4": {
+          "type": "video",
+          "settings": {
+            "video_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_WHHK9C",
+        "video_JnUcBm",
+        "video_yYkDLa",
+        "video_UCwtJn",
+        "video_zRqGL4"
+      ],
+      "name": "Carrousel Vidéos",
+      "settings": {
+        "title": "Vous et notre marque",
+        "title_color": "#333333",
+        "title_font": "assistant_n4",
+        "background_color": "#f5f5f5"
+      }
     }
   },
   "order": [
     "newsletter-popup",
     "privacy-banner",
     "cart-drawer",
-    "search-drawer"
+    "search-drawer",
+    "section_KLzggT"
   ]
 }
