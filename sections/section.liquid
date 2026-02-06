@@ -1,6 +1,7 @@
 {% comment %}
-  Section: Carrousel de Vidéos
-  Utilisation: Ajoutez cette section dans votre thème Shopify
+  Section: Carrousel de Vidéos - Dimensions exactes Ceralyne
+  Mobile: 180px x 280px (comme sur la photo)
+  Desktop: 280px x 400px
 {% endcomment %}
 
 <div class="video-carousel-section" data-section-id="{{ section.id }}">
@@ -76,7 +77,7 @@
 
 <style>
   .video-carousel-section {
-    padding: 30px 0;
+    padding: 40px 0;
     background-color: {{ section.settings.background_color }};
   }
 
@@ -88,9 +89,9 @@
 
   .video-carousel-section .section-title {
     text-align: center;
-    font-size: {{ section.settings.title_size }}px;
+    font-size: 28px;
     font-weight: 400;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     color: {{ section.settings.title_color }};
     font-family: {{ section.settings.title_font.family }}, sans-serif;
   }
@@ -98,33 +99,35 @@
   .video-carousel-section .carousel-container {
     position: relative;
     overflow: hidden;
-    padding: 0 60px;
+    padding: 0 50px;
   }
 
   .video-carousel-section .carousel-wrapper {
     display: flex;
-    gap: {{ section.settings.card_spacing }}px;
+    gap: 12px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    padding: 5px 0;
   }
 
   .video-carousel-section .carousel-wrapper::-webkit-scrollbar {
     display: none;
   }
 
+  /* DESKTOP - Plus grandes vidéos */
   .video-carousel-section .video-card {
-    min-width: {{ section.settings.card_width }}px;
-    max-width: {{ section.settings.card_width }}px;
-    height: {{ section.settings.card_height }}px;
-    border-radius: {{ section.settings.border_radius }}px;
+    min-width: 280px;
+    max-width: 280px;
+    height: 400px;
+    border-radius: 15px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .video-carousel-section .video-card:hover {
@@ -193,8 +196,8 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background: white;
     border: none;
@@ -276,52 +279,103 @@
     transform: scale(1.1);
   }
 
-  /* Responsive */
+  /* MOBILE - Dimensions exactes comme Ceralyne (180px x 280px) */
   @media (max-width: 768px) {
     .video-carousel-section {
-      padding: 40px 0;
-    }
-
-    .video-carousel-section .carousel-container {
-      padding: 0 40px;
-    }
-
-    .video-carousel-section .video-card {
-      min-width: 240px;
-      max-width: 240px;
-      height: 360px;
-    }
-
-    .video-carousel-section .carousel-button {
-      width: 40px;
-      height: 40px;
+      padding: 30px 0;
     }
 
     .video-carousel-section .section-title {
-      font-size: 24px;
-      margin-bottom: 30px;
+      font-size: 22px;
+      margin-bottom: 25px;
+      padding: 0 15px;
+    }
+
+    .video-carousel-section .carousel-container {
+      padding: 0 35px;
+    }
+
+    /* DIMENSIONS EXACTES CERALYNE MOBILE */
+    .video-carousel-section .video-card {
+      min-width: 180px;
+      max-width: 180px;
+      height: 280px;
+      border-radius: 12px;
+    }
+
+    .video-carousel-section .carousel-wrapper {
+      gap: 10px;
+    }
+
+    .video-carousel-section .carousel-button {
+      width: 35px;
+      height: 35px;
+    }
+
+    .video-carousel-section .carousel-button svg {
+      width: 8px;
+      height: 14px;
     }
 
     .video-carousel-section .play-button {
       width: 50px;
       height: 50px;
     }
+
+    .video-carousel-section .play-button::after {
+      border-left: 14px solid #333;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+    }
+
+    .video-carousel-section .video-card:active {
+      transform: scale(0.98);
+    }
+
+    .video-modal .close-modal {
+      top: -45px;
+      width: 35px;
+      height: 35px;
+      font-size: 20px;
+    }
   }
 
-  @media (max-width: 480px) {
+  /* Très petits mobiles */
+  @media (max-width: 400px) {
+    .video-carousel-section .carousel-container {
+      padding: 0 25px;
+    }
+
     .video-carousel-section .video-card {
-      min-width: 200px;
-      max-width: 200px;
-      height: 320px;
+      min-width: 165px;
+      max-width: 165px;
+      height: 260px;
+    }
+
+    .video-carousel-section .carousel-button {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  /* Tablettes */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .video-carousel-section .video-card {
+      min-width: 220px;
+      max-width: 220px;
+      height: 340px;
     }
   }
 </style>
 
 <script>
-  // Fonction pour faire défiler le carrousel Shopify
+  // Fonction pour faire défiler le carrousel
   function scrollCarouselShopify(sectionId, direction) {
     const carousel = document.getElementById('carousel-' + sectionId);
-    const scrollAmount = 320;
+    
+    // Détection mobile pour adapter la distance de scroll
+    const isMobile = window.innerWidth <= 768;
+    const scrollAmount = isMobile ? 200 : 300;
     
     if (direction === 'next') {
       carousel.scrollLeft += scrollAmount;
@@ -334,14 +388,19 @@
   function openVideoModalShopify(sectionId, index) {
     const modal = document.getElementById('video-modal-' + sectionId);
     const modalVideo = document.getElementById('modal-video-' + sectionId);
-    const videos = document.querySelectorAll([data-section-id="${sectionId}"] video[data-video-index]);
+    const videos = document.querySelectorAll(`[data-section-id="${sectionId}"] video[data-video-index]`);
     
     if (videos[index]) {
       const videoSrc = videos[index].querySelector('source').src;
       modalVideo.querySelector('source').src = videoSrc;
       modalVideo.load();
       modal.classList.add('active');
-      modalVideo.play();
+      
+      // Jouer la vidéo avec gestion d'erreur
+      modalVideo.play().catch(function(error) {
+        console.log('Autoplay prevented:', error);
+      });
+      
       document.body.style.overflow = 'hidden';
     }
   }
@@ -365,65 +424,88 @@
     }
   });
 
-  // Preview vidéo au survol
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.video-carousel-section .video-card').forEach(card => {
-      const video = card.querySelector('video');
-      
-      if (video) {
-        card.addEventListener('mouseenter', () => {
-          video.play().catch(err => console.log('Autoplay prevented'));
-        });
-        
-        card.addEventListener('mouseleave', () => {
-          video.pause();
-          video.currentTime = 0;
-        });
+  // Fermer avec la touche Escape
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      const activeModal = document.querySelector('.video-modal.active');
+      if (activeModal) {
+        const sectionId = activeModal.getAttribute('data-section-id');
+        closeVideoModalShopify(sectionId);
       }
-    });
+    }
   });
 
-  // Support tactile pour mobile
+  // Preview vidéo au survol (DESKTOP seulement)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier si on est sur desktop
+    const isDesktop = window.matchMedia('(min-width: 769px)').matches;
+    
+    if (isDesktop) {
+      document.querySelectorAll('.video-carousel-section .video-card').forEach(card => {
+        const video = card.querySelector('video');
+        
+        if (video) {
+          card.addEventListener('mouseenter', () => {
+            video.play().catch(err => {
+              // Silence l'erreur si autoplay est bloqué
+            });
+          });
+          
+          card.addEventListener('mouseleave', () => {
+            video.pause();
+            video.currentTime = 0;
+          });
+        }
+      });
+    }
+  });
+
+  // Support tactile pour mobile (swipe)
   document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.carousel-wrapper').forEach(carousel => {
       let startX;
+      let scrollLeft;
+      let isDown = false;
       
       carousel.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
+        isDown = true;
+        startX = e.touches[0].pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
       });
       
       carousel.addEventListener('touchmove', (e) => {
-        if (!startX) return;
-        
-        const currentX = e.touches[0].clientX;
-        const diff = startX - currentX;
-        
-        carousel.scrollLeft += diff;
-        startX = currentX;
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.touches[0].pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 1.5; // Multiplicateur pour la vitesse
+        carousel.scrollLeft = scrollLeft - walk;
       });
+      
+      carousel.addEventListener('touchend', () => {
+        isDown = false;
+      });
+    });
+  });
+
+  // Empêcher le scroll de la page quand on scroll le carrousel sur mobile
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.carousel-wrapper').forEach(carousel => {
+      carousel.addEventListener('touchmove', function(e) {
+        e.stopPropagation();
+      }, { passive: false });
     });
   });
 </script>
 
 {% schema %}
 {
-  "name": "Carrousel de Vidéos",
+  "name": "Carrousel Vidéos",
   "settings": [
     {
       "type": "text",
       "id": "title",
-      "label": "Titre de la section",
+      "label": "Titre",
       "default": "Vous et notre marque"
-    },
-    {
-      "type": "range",
-      "id": "title_size",
-      "min": 18,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "label": "Taille du titre",
-      "default": 28
     },
     {
       "type": "color",
@@ -442,46 +524,6 @@
       "id": "background_color",
       "label": "Couleur de fond",
       "default": "#f5f5f5"
-    },
-    {
-      "type": "range",
-      "id": "card_width",
-      "min": 200,
-      "max": 400,
-      "step": 20,
-      "unit": "px",
-      "label": "Largeur des cartes",
-      "default": 280
-    },
-    {
-      "type": "range",
-      "id": "card_height",
-      "min": 300,
-      "max": 600,
-      "step": 20,
-      "unit": "px",
-      "label": "Hauteur des cartes",
-      "default": 400
-    },
-    {
-      "type": "range",
-      "id": "card_spacing",
-      "min": 10,
-      "max": 40,
-      "step": 5,
-      "unit": "px",
-      "label": "Espacement entre les cartes",
-      "default": 15
-    },
-    {
-      "type": "range",
-      "id": "border_radius",
-      "min": 0,
-      "max": 30,
-      "step": 5,
-      "unit": "px",
-      "label": "Arrondi des coins",
-      "default": 15
     }
   ],
   "blocks": [
@@ -498,14 +540,14 @@
           "type": "url",
           "id": "video_url",
           "label": "OU URL de la vidéo",
-          "info": "Si aucune vidéo n'est téléchargée, utilisez cette URL"
+          "info": "Utilisez cette option si vous hébergez la vidéo ailleurs"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Carrousel de Vidéos",
+      "name": "Carrousel Vidéos",
       "blocks": [
         {
           "type": "video"
