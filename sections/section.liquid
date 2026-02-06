@@ -1,203 +1,196 @@
 {% comment %}
-  Section: Carrousel de Vidéos - Dimensions exactes Ceralyne
-  Mobile: 80px x 180px (comme sur la photo)
-  Desktop: 180px x 300px
+  CARROUSEL VIDÉOS - DIMENSIONS EXACTES CERALYNE
+  Mobile: 190px × 300px
+  Desktop: 280px × 420px
 {% endcomment %}
 
-<div class="video-carousel-section" data-section-id="{{ section.id }}">
-  <div class="container">
+<div class="video-carousel-ceralyne" data-section-id="{{ section.id }}">
+  <div class="container-ceralyne">
     {% if section.settings.title != blank %}
-      <h2 class="section-title">{{ section.settings.title }}</h2>
+      <h2 class="title-ceralyne">{{ section.settings.title }}</h2>
     {% endif %}
     
-    <div class="carousel-container">
-      <button class="carousel-button prev" onclick="scrollCarouselShopify('{{ section.id }}', 'prev')" aria-label="Précédent">
+    <div class="carousel-box">
+      <button class="btn-prev" onclick="scrollCarousel('{{ section.id }}', 'prev')">
         <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
-          <path d="M8 2L2 8L8 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 2L2 8L8 14" stroke="currentColor" stroke-width="2"/>
         </svg>
       </button>
       
-      <div class="carousel-wrapper" id="carousel-{{ section.id }}">
+      <div class="carousel-track" id="track-{{ section.id }}">
         {% for block in section.blocks %}
-          <div class="video-card" {{ block.shopify_attributes }}>
+          <div class="video-item" {{ block.shopify_attributes }}>
             {% if block.settings.video != blank %}
-              <video 
-                muted 
-                loop 
-                playsinline
-                preload="metadata"
-                data-video-index="{{ forloop.index0 }}"
-                data-section-id="{{ section.id }}">
+              <video muted loop playsinline preload="metadata" 
+                     data-index="{{ forloop.index0 }}" 
+                     data-section="{{ section.id }}">
                 <source src="{{ block.settings.video }}" type="video/mp4">
               </video>
             {% elsif block.settings.video_url != blank %}
-              <video 
-                muted 
-                loop 
-                playsinline
-                preload="metadata"
-                data-video-index="{{ forloop.index0 }}"
-                data-section-id="{{ section.id }}">
+              <video muted loop playsinline preload="metadata"
+                     data-index="{{ forloop.index0 }}" 
+                     data-section="{{ section.id }}">
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
               </video>
             {% else %}
-              <div class="video-placeholder">
-                <svg width="60" height="60" viewBox="0 0 60 60">
-                  <circle cx="30" cy="30" r="28" fill="#e0e0e0"/>
-                  <path d="M25 20L40 30L25 40V20Z" fill="#999"/>
+              <div class="video-empty">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                  <circle cx="25" cy="25" r="23" fill="#ddd"/>
+                  <path d="M20 15L35 25L20 35V15Z" fill="#999"/>
                 </svg>
               </div>
             {% endif %}
             
-            <div class="video-overlay" onclick="openVideoModalShopify('{{ section.id }}', {{ forloop.index0 }})">
-              <button class="play-button" aria-label="Lire la vidéo"></button>
+            <div class="video-layer" onclick="openModal('{{ section.id }}', {{ forloop.index0 }})">
+              <button class="btn-play"></button>
             </div>
           </div>
         {% endfor %}
       </div>
 
-      <button class="carousel-button next" onclick="scrollCarouselShopify('{{ section.id }}', 'next')" aria-label="Suivant">
+      <button class="btn-next" onclick="scrollCarousel('{{ section.id }}', 'next')">
         <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
-          <path d="M2 2L8 8L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M2 2L8 8L2 14" stroke="currentColor" stroke-width="2"/>
         </svg>
       </button>
     </div>
   </div>
 </div>
 
-<!-- Modal pour lecture vidéo -->
-<div class="video-modal" id="video-modal-{{ section.id }}" data-section-id="{{ section.id }}">
-  <div class="modal-content">
-    <button class="close-modal" onclick="closeVideoModalShopify('{{ section.id }}')" aria-label="Fermer">×</button>
-    <video class="modal-video" id="modal-video-{{ section.id }}" controls playsinline>
+<!-- Modal -->
+<div class="video-modal-ceralyne" id="modal-{{ section.id }}" data-section="{{ section.id }}">
+  <div class="modal-box">
+    <button class="btn-close" onclick="closeModal('{{ section.id }}')">×</button>
+    <video class="modal-player" id="player-{{ section.id }}" controls playsinline>
       <source src="" type="video/mp4">
     </video>
   </div>
 </div>
 
 <style>
-  .video-carousel-section {
-    padding: 30px 0;
-    background-color: {{ section.settings.background_color }};
+  /* SECTION PRINCIPALE */
+  .video-carousel-ceralyne {
+    padding: 35px 0;
+    background: {{ section.settings.background_color }};
   }
 
-  .video-carousel-section .container {
+  .container-ceralyne {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 15px;
   }
 
-  .video-carousel-section .section-title {
+  .title-ceralyne {
     text-align: center;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 300;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: {{ section.settings.title_color }};
     font-family: {{ section.settings.title_font.family }}, sans-serif;
   }
 
-  .video-carousel-section .carousel-container {
+  .carousel-box {
     position: relative;
     overflow: hidden;
-    padding: 0 50px;
+    padding: 0 45px;
   }
 
-  .video-carousel-section .carousel-wrapper {
+  .carousel-track {
     display: flex;
     gap: 12px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 5px 0;
+    padding: 8px 0;
   }
 
-  .video-carousel-section .carousel-wrapper::-webkit-scrollbar {
+  .carousel-track::-webkit-scrollbar {
     display: none;
   }
 
-  /* DESKTOP - Plus grandes vidéos */
-  .video-carousel-section .video-card {
-    min-width: 50px;
-    max-width: 50px;
-    height: 200px;
-    border-radius: 8px;
+  /* VIDÉOS DESKTOP */
+  .video-item {
+    min-width: 280px;
+    max-width: 280px;
+    height: 420px;
+    border-radius: 14px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    transition: all 0.3s ease;
   }
 
-  .video-carousel-section .video-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  .video-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
   }
 
-  .video-carousel-section .video-card video,
-  .video-carousel-section .video-placeholder {
+  .video-item video,
+  .video-empty {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .video-carousel-section .video-overlay {
+  .video-layer {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
+    inset: 0;
+    background: rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.3s ease;
+    transition: background 0.3s;
   }
 
-  .video-carousel-section .video-card:hover .video-overlay {
-    background: rgba(0, 0, 0, 0.3);
+  .video-item:hover .video-layer {
+    background: rgba(0,0,0,0.35);
   }
 
-  .video-carousel-section .play-button {
-    width: 60px;
-    height: 60px;
+  /* BOUTON PLAY */
+  .btn-play {
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255,255,255,0.95);
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
     position: relative;
+    transition: all 0.3s;
   }
 
-  .video-carousel-section .play-button:hover {
-    transform: scale(1.15);
+  .btn-play:hover {
+    transform: scale(1.1);
     background: white;
   }
 
-  .video-carousel-section .play-button::after {
+  .btn-play::after {
     content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-40%, -50%);
     width: 0;
     height: 0;
-    border-left: 16px solid #333;
-    border-top: 11px solid transparent;
-    border-bottom: 11px solid transparent;
-    margin-left: 4px;
+    border-left: 18px solid #333;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
   }
 
-  .video-carousel-section .carousel-button {
+  /* BOUTONS NAVIGATION */
+  .btn-prev,
+  .btn-next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 45px;
-    height: 45px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: white;
     border: none;
@@ -205,301 +198,268 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
     z-index: 10;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
   }
 
-  .video-carousel-section .carousel-button:hover {
+  .btn-prev:hover,
+  .btn-next:hover {
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.2);
   }
 
-  .video-carousel-section .carousel-button.prev {
-    left: 0;
-  }
+  .btn-prev { left: 0; }
+  .btn-next { right: 0; }
 
-  .video-carousel-section .carousel-button.next {
-    right: 0;
-  }
-
-  .video-carousel-section .carousel-button svg {
+  .btn-prev svg,
+  .btn-next svg {
     color: #333;
   }
 
-  /* Modal */
-  .video-modal {
+  /* MODAL */
+  .video-modal-ceralyne {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.95);
+    inset: 0;
+    background: rgba(0,0,0,0.95);
     z-index: 9999;
     align-items: center;
     justify-content: center;
     padding: 20px;
   }
 
-  .video-modal.active {
+  .video-modal-ceralyne.active {
     display: flex;
   }
 
-  .video-modal .modal-content {
+  .modal-box {
     position: relative;
     max-width: 90%;
     max-height: 90vh;
   }
 
-  .video-modal .modal-video {
+  .modal-player {
     max-width: 100%;
     max-height: 90vh;
-    border-radius: 10px;
+    border-radius: 12px;
   }
 
-  .video-modal .close-modal {
+  .btn-close {
     position: absolute;
     top: -50px;
     right: 0;
     background: white;
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 26px;
+    font-weight: 300;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s;
   }
 
-  .video-modal .close-modal:hover {
+  .btn-close:hover {
     transform: scale(1.1);
   }
 
-  /* MOBILE - Dimensions EXACTES Ceralyne (petites vidéos comme sur la photo) */
+  /* 📱 MOBILE - DIMENSIONS EXACTES CERALYNE */
   @media (max-width: 768px) {
-    .video-carousel-section {
-      padding: 25px 0;
+    .video-carousel-ceralyne {
+      padding: 28px 0;
     }
 
-    .video-carousel-section .section-title {
+    .title-ceralyne {
       font-size: 20px;
-      margin-bottom: 20px;
-      padding: 0 15px;
+      margin-bottom: 22px;
     }
 
-    .video-carousel-section .carousel-container {
-      padding: 0 30px;
+    .carousel-box {
+      padding: 0 32px;
     }
 
-    /* DIMENSIONS EXACTES CERALYNE MOBILE - PETITES VIDÉOS */
-    .video-carousel-section .video-card {
-      min-width: 160px;
-      max-width: 160px;
-      height: 250px;
-      border-radius: 10px;
+    /* 🎯 DIMENSIONS EXACTES CERALYNE MOBILE */
+    .video-item {
+      min-width: 190px;
+      max-width: 190px;
+      height: 300px;
+      border-radius: 12px;
     }
 
-    .video-carousel-section .carousel-wrapper {
-      gap: 8px;
+    .carousel-track {
+      gap: 10px;
+      padding: 5px 0;
     }
 
-    .video-carousel-section .carousel-button {
-      width: 32px;
-      height: 32px;
+    .btn-prev,
+    .btn-next {
+      width: 36px;
+      height: 36px;
     }
 
-    .video-carousel-section .carousel-button svg {
-      width: 7px;
-      height: 12px;
+    .btn-prev svg,
+    .btn-next svg {
+      width: 8px;
+      height: 13px;
     }
 
-    .video-carousel-section .play-button {
-      width: 45px;
-      height: 45px;
+    .btn-play {
+      width: 52px;
+      height: 52px;
     }
 
-    .video-carousel-section .play-button::after {
-      border-left: 12px solid #333;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
+    .btn-play::after {
+      border-left: 15px solid #333;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
     }
 
-    .video-carousel-section .video-card:active {
-      transform: scale(0.98);
+    .video-item:active {
+      transform: scale(0.97);
     }
 
-    .video-modal .close-modal {
+    .btn-close {
       top: -45px;
-      width: 35px;
-      height: 35px;
-      font-size: 20px;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
     }
   }
 
-  /* Très petits mobiles */
+  /* Petits mobiles */
   @media (max-width: 400px) {
-    .video-carousel-section .carousel-container {
-      padding: 0 20px;
+    .carousel-box {
+      padding: 0 25px;
     }
 
-    .video-carousel-section .video-card {
-      min-width: 145px;
-      max-width: 145px;
-      height: 230px;
+    .video-item {
+      min-width: 170px;
+      max-width: 170px;
+      height: 270px;
     }
 
-    .video-carousel-section .carousel-button {
-      width: 28px;
-      height: 28px;
+    .btn-prev,
+    .btn-next {
+      width: 32px;
+      height: 32px;
     }
   }
 
   /* Tablettes */
   @media (min-width: 769px) and (max-width: 1024px) {
-    .video-carousel-section .video-card {
-      min-width: 220px;
-      max-width: 220px;
-      height: 340px;
+    .video-item {
+      min-width: 230px;
+      max-width: 230px;
+      height: 360px;
     }
   }
 </style>
 
 <script>
-  // Fonction pour faire défiler le carrousel
-  function scrollCarouselShopify(sectionId, direction) {
-    const carousel = document.getElementById('carousel-' + sectionId);
-    
-    // Détection mobile pour adapter la distance de scroll (petites vidéos)
+  // Scroll du carrousel
+  function scrollCarousel(sectionId, direction) {
+    const track = document.getElementById('track-' + sectionId);
     const isMobile = window.innerWidth <= 768;
-    const scrollAmount = isMobile ? 170 : 300; // Plus petit pour mobile
+    const distance = isMobile ? 200 : 300;
     
-    if (direction === 'next') {
-      carousel.scrollLeft += scrollAmount;
-    } else {
-      carousel.scrollLeft -= scrollAmount;
-    }
+    track.scrollLeft += (direction === 'next' ? distance : -distance);
   }
 
-  // Ouvrir la modal avec la vidéo
-  function openVideoModalShopify(sectionId, index) {
-    const modal = document.getElementById('video-modal-' + sectionId);
-    const modalVideo = document.getElementById('modal-video-' + sectionId);
-    const videos = document.querySelectorAll(`[data-section-id="${sectionId}"] video[data-video-index]`);
+  // Ouvrir modal
+  function openModal(sectionId, index) {
+    const modal = document.getElementById('modal-' + sectionId);
+    const player = document.getElementById('player-' + sectionId);
+    const videos = document.querySelectorAll(`[data-section="${sectionId}"] video[data-index]`);
     
     if (videos[index]) {
-      const videoSrc = videos[index].querySelector('source').src;
-      modalVideo.querySelector('source').src = videoSrc;
-      modalVideo.load();
+      const src = videos[index].querySelector('source').src;
+      player.querySelector('source').src = src;
+      player.load();
       modal.classList.add('active');
-      
-      // Jouer la vidéo avec gestion d'erreur
-      modalVideo.play().catch(function(error) {
-        console.log('Autoplay prevented:', error);
-      });
-      
+      player.play().catch(e => console.log('Autoplay:', e));
       document.body.style.overflow = 'hidden';
     }
   }
 
-  // Fermer la modal
-  function closeVideoModalShopify(sectionId) {
-    const modal = document.getElementById('video-modal-' + sectionId);
-    const modalVideo = document.getElementById('modal-video-' + sectionId);
+  // Fermer modal
+  function closeModal(sectionId) {
+    const modal = document.getElementById('modal-' + sectionId);
+    const player = document.getElementById('player-' + sectionId);
     
     modal.classList.remove('active');
-    modalVideo.pause();
-    modalVideo.currentTime = 0;
+    player.pause();
+    player.currentTime = 0;
     document.body.style.overflow = '';
   }
 
-  // Fermer en cliquant sur le fond
-  document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('video-modal')) {
-      const sectionId = event.target.getAttribute('data-section-id');
-      closeVideoModalShopify(sectionId);
-    }
-  });
-
-  // Fermer avec la touche Escape
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      const activeModal = document.querySelector('.video-modal.active');
-      if (activeModal) {
-        const sectionId = activeModal.getAttribute('data-section-id');
-        closeVideoModalShopify(sectionId);
-      }
-    }
-  });
-
-  // Preview vidéo au survol (DESKTOP seulement)
+  // Setup listeners
   document.addEventListener('DOMContentLoaded', function() {
-    // Vérifier si on est sur desktop
-    const isDesktop = window.matchMedia('(min-width: 769px)').matches;
-    
-    if (isDesktop) {
-      document.querySelectorAll('.video-carousel-section .video-card').forEach(card => {
-        const video = card.querySelector('video');
-        
+    // Fermer modal au clic sur fond
+    document.querySelectorAll('.video-modal-ceralyne').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          const sectionId = this.getAttribute('data-section');
+          closeModal(sectionId);
+        }
+      });
+    });
+
+    // Fermer avec Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const active = document.querySelector('.video-modal-ceralyne.active');
+        if (active) closeModal(active.getAttribute('data-section'));
+      }
+    });
+
+    // Preview hover (desktop uniquement)
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.video-item').forEach(item => {
+        const video = item.querySelector('video');
         if (video) {
-          card.addEventListener('mouseenter', () => {
-            video.play().catch(err => {
-              // Silence l'erreur si autoplay est bloqué
-            });
+          item.addEventListener('mouseenter', () => {
+            video.play().catch(() => {});
           });
-          
-          card.addEventListener('mouseleave', () => {
+          item.addEventListener('mouseleave', () => {
             video.pause();
             video.currentTime = 0;
           });
         }
       });
     }
-  });
 
-  // Support tactile pour mobile (swipe)
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.carousel-wrapper').forEach(carousel => {
-      let startX;
-      let scrollLeft;
-      let isDown = false;
+    // Swipe mobile
+    document.querySelectorAll('.carousel-track').forEach(track => {
+      let startX, scrollLeft, isDragging = false;
       
-      carousel.addEventListener('touchstart', (e) => {
-        isDown = true;
-        startX = e.touches[0].pageX - carousel.offsetLeft;
-        scrollLeft = carousel.scrollLeft;
+      track.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
       });
       
-      carousel.addEventListener('touchmove', (e) => {
-        if (!isDown) return;
+      track.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
         e.preventDefault();
-        const x = e.touches[0].pageX - carousel.offsetLeft;
-        const walk = (x - startX) * 1.5; // Multiplicateur pour la vitesse
-        carousel.scrollLeft = scrollLeft - walk;
+        const x = e.touches[0].pageX - track.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        track.scrollLeft = scrollLeft - walk;
       });
       
-      carousel.addEventListener('touchend', () => {
-        isDown = false;
+      track.addEventListener('touchend', () => {
+        isDragging = false;
       });
-    });
-  });
-
-  // Empêcher le scroll de la page quand on scroll le carrousel sur mobile
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.carousel-wrapper').forEach(carousel => {
-      carousel.addEventListener('touchmove', function(e) {
-        e.stopPropagation();
-      }, { passive: false });
     });
   });
 </script>
 
 {% schema %}
 {
-  "name": "Carrousel Vidéos",
+  "name": "Carrousel Vidéos Ceralyne",
   "settings": [
     {
       "type": "text",
@@ -510,19 +470,19 @@
     {
       "type": "color",
       "id": "title_color",
-      "label": "Couleur du titre",
+      "label": "Couleur titre",
       "default": "#333333"
     },
     {
       "type": "font_picker",
       "id": "title_font",
-      "label": "Police du titre",
+      "label": "Police titre",
       "default": "assistant_n4"
     },
     {
       "type": "color",
       "id": "background_color",
-      "label": "Couleur de fond",
+      "label": "Fond",
       "default": "#f5f5f5"
     }
   ],
@@ -534,30 +494,23 @@
         {
           "type": "video",
           "id": "video",
-          "label": "Télécharger une vidéo"
+          "label": "Vidéo"
         },
         {
           "type": "url",
           "id": "video_url",
-          "label": "OU URL de la vidéo",
-          "info": "Utilisez cette option si vous hébergez la vidéo ailleurs"
+          "label": "OU URL vidéo"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Carrousel Vidéos",
+      "name": "Carrousel Vidéos Ceralyne",
       "blocks": [
-        {
-          "type": "video"
-        },
-        {
-          "type": "video"
-        },
-        {
-          "type": "video"
-        }
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" }
       ]
     }
   ]
