@@ -1,10 +1,10 @@
 {% comment %}
-  CARROUSEL VIDÉOS - PETITES DIMENSIONS + SWIPE + BOUTONS
+  CARROUSEL VIDÉOS - PETIT FORMAT + AJOUT BLOCS + SLIDE HORIZONTAL
   Mobile: 93px × 148px
   Desktop: 135px × 205px
 {% endcomment %}
 
-<div class="videoslider" data-section-id="{{ section.id }}">
+<section class="videoslider" data-section-id="{{ section.id }}">
   <div class="videoslider-wrap">
     {% if section.settings.title != blank %}
       <h2 class="videoslider-title">{{ section.settings.title }}</h2>
@@ -18,15 +18,15 @@
         </svg>
       </button>
 
-      <div class="videoslider-scroll" id="scroll-{{ section.id }}">
+      <div class="videoslider-scroll" id="scroll-{{ section.id }}" role="list">
         {% for block in section.blocks %}
-          <div class="videoslider-card" data-block-id="{{ block.id }}">
+          <div class="videoslider-card" role="listitem" {{ block.shopify_attributes }}>
             {% if block.settings.video != blank %}
-              <video muted loop playsinline preload="metadata" data-vid="{{ forloop.index0 }}" data-sec="{{ section.id }}">
+              <video muted loop playsinline preload="metadata">
                 <source src="{{ block.settings.video }}" type="video/mp4">
               </video>
             {% elsif block.settings.video_url != blank %}
-              <video muted loop playsinline preload="metadata" data-vid="{{ forloop.index0 }}" data-sec="{{ section.id }}">
+              <video muted loop playsinline preload="metadata">
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
               </video>
             {% else %}
@@ -54,7 +54,7 @@
       </button>
     </div>
   </div>
-</div>
+</section>
 
 <div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}" aria-hidden="true">
   <div class="videoslider-modalbox" role="dialog" aria-modal="true">
@@ -93,33 +93,46 @@
     padding: 0 40px;
   }
 
-  .videoslider-scroll {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
+  /* FORCE HORIZONTAL (évite overrides thème) */
+  .videoslider .videoslider-scroll {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+
+    gap: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
   }
 
-  .videoslider-scroll::-webkit-scrollbar { display: none; }
+  .videoslider .videoslider-scroll::-webkit-scrollbar { display: none; }
 
-  /* CARTES: PAS D'ENCADRÉ BLANC (pas de padding/fond blanc) */
-  .videoslider-card {
+  /* PETITES CARTES - SANS ENCADRÉ BLANC */
+  .videoslider .videoslider-card {
     min-width: 135px;
     width: 135px;
     height: 205px;
+
     border-radius: 14px;
     overflow: hidden;
     position: relative;
-    flex-shrink: 0;
+    flex: 0 0 auto !important;
+
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+
     box-shadow: 0 3px 10px rgba(0,0,0,0.10);
-    transform: translateZ(0);
   }
 
-  .videoslider-card video,
-  .videoslider-placeholder {
+  .videoslider .videoslider-card video,
+  .videoslider .videoslider-placeholder {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -129,33 +142,30 @@
     justify-content: center;
   }
 
-  .videoslider-overlay {
+  .videoslider .videoslider-overlay {
     position: absolute;
     inset: 0;
     border: 0;
+    padding: 0;
+    cursor: pointer;
     background: rgba(0,0,0,0.18);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    padding: 0;
   }
 
-  .videoslider-overlay:hover { background: rgba(0,0,0,0.26); }
+  .videoslider .videoslider-overlay:hover { background: rgba(0,0,0,0.26); }
 
-  .videoslider-playbtn {
+  .videoslider .videoslider-playbtn {
     width: 44px;
     height: 44px;
     border-radius: 50%;
     background: rgba(255,255,255,0.96);
     position: relative;
     display: block;
-    transition: transform 0.2s ease;
   }
 
-  .videoslider-overlay:hover .videoslider-playbtn { transform: scale(1.06); }
-
-  .videoslider-playbtn::after {
+  .videoslider .videoslider-playbtn::after {
     content: '';
     position: absolute;
     left: 50%;
@@ -184,11 +194,7 @@
     justify-content: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     z-index: 10;
-    transition: transform 0.2s ease;
   }
-
-  .videoslider-prev:hover,
-  .videoslider-next:hover { transform: translateY(-50%) scale(1.08); }
 
   .videoslider-prev { left: 0; }
   .videoslider-next { right: 0; }
@@ -242,9 +248,10 @@
     .videoslider { padding: 26px 0; }
     .videoslider-title { font-size: 20px; margin-bottom: 20px; }
     .videoslider-container { padding: 0 28px; }
-    .videoslider-scroll { gap: 10px; }
 
-    .videoslider-card {
+    .videoslider .videoslider-scroll { gap: 10px !important; }
+
+    .videoslider .videoslider-card {
       min-width: 93px;
       width: 93px;
       height: 148px;
@@ -257,8 +264,9 @@
     .videoslider-prev svg,
     .videoslider-next svg { width: 8px; height: 13px; }
 
-    .videoslider-playbtn { width: 34px; height: 34px; }
-    .videoslider-playbtn::after {
+    .videoslider .videoslider-playbtn { width: 34px; height: 34px; }
+
+    .videoslider .videoslider-playbtn::after {
       border-left: 10px solid #333;
       border-top: 7px solid transparent;
       border-bottom: 7px solid transparent;
@@ -294,28 +302,26 @@
   }
 
   function videoSliderVideos(secId) {
-    return Array.from(document.querySelectorAll(`[data-sec="${secId}"] video[data-vid]`));
+    return Array.from(document.querySelectorAll(`[data-section-id="${secId}"] .videoslider-card video source`))
+      .map(s => s.getAttribute('src'))
+      .filter(Boolean);
   }
 
   function videoSliderOpen(secId, idx) {
     const modal = document.getElementById('modal-' + secId);
     const player = document.getElementById('video-' + secId);
-    const vids = videoSliderVideos(secId);
-    if (!vids.length || !modal || !player) return;
+    const sources = videoSliderVideos(secId);
+    if (!sources.length || !modal || !player) return;
 
-    const safeIdx = Math.max(0, Math.min(idx, vids.length - 1));
+    const safeIdx = Math.max(0, Math.min(idx, sources.length - 1));
     window.__videoSlider[secId] = { idx: safeIdx };
 
-    const src = vids[safeIdx].querySelector('source')?.src;
-    if (!src) return;
-
-    player.querySelector('source').src = src;
+    player.querySelector('source').src = sources[safeIdx];
     player.load();
 
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-
     player.play().catch(() => {});
   }
 
@@ -326,14 +332,13 @@
 
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden', 'true');
-
     player.pause();
     player.currentTime = 0;
     document.body.style.overflow = '';
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Fermer modal en cliquant le fond
+    // fermer modal en cliquant le fond
     document.querySelectorAll('.videoslider-modal').forEach(modal => {
       modal.addEventListener('click', e => {
         if (e.target === modal) videoSliderClose(modal.getAttribute('data-sec'));
@@ -347,7 +352,7 @@
       if (active) videoSliderClose(active.getAttribute('data-sec'));
     });
 
-    // Swipe/drag sur le carrousel (doigt) + compatible iOS (passive:false)
+    // Swipe/drag (doigt) horizontal garanti
     document.querySelectorAll('.videoslider-scroll').forEach(scr => {
       let dragging = false;
       let startX = 0;
@@ -361,11 +366,9 @@
 
       scr.addEventListener('touchmove', e => {
         if (!dragging) return;
-        // empêche le scroll horizontal de "bloquer" sur certains thèmes
         e.preventDefault();
         const x = e.touches[0].pageX;
-        const dx = x - startX;
-        scr.scrollLeft = startScroll - dx;
+        scr.scrollLeft = startScroll - (x - startX);
       }, { passive: false });
 
       scr.addEventListener('touchend', () => { dragging = false; }, { passive: true });
@@ -406,6 +409,7 @@
   ]
 }
 {% endschema %}
+
 
 
 
