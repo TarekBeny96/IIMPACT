@@ -1,7 +1,7 @@
 {% comment %}
-  CARROUSEL VIDÉOS - DIMENSIONS /2 + ENCADRÉ
-  Mobile (approx /2): 93px × 148px
-  Desktop (/2): 135px × 205px
+  CARROUSEL VIDÉOS - PETITES DIMENSIONS + SWIPE + BOUTONS
+  Mobile: 93px × 148px
+  Desktop: 135px × 205px
 {% endcomment %}
 
 <div class="videoslider" data-section-id="{{ section.id }}">
@@ -9,47 +9,46 @@
     {% if section.settings.title != blank %}
       <h2 class="videoslider-title">{{ section.settings.title }}</h2>
     {% endif %}
-    
+
     <div class="videoslider-container">
-      <button class="videoslider-prev" onclick="slideVideo('{{ section.id }}', 'prev')">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+      <button class="videoslider-prev" type="button" aria-label="Précédent"
+              onclick="videoSliderSlide('{{ section.id }}','prev')">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
           <path d="M8 2L2 8L8 14" stroke="#333" stroke-width="2"/>
         </svg>
       </button>
-      
+
       <div class="videoslider-scroll" id="scroll-{{ section.id }}">
         {% for block in section.blocks %}
-          <div class="videoslider-card">
+          <div class="videoslider-card" data-block-id="{{ block.id }}">
             {% if block.settings.video != blank %}
-              <video muted loop playsinline preload="metadata" 
-                     data-vid="{{ forloop.index0 }}" 
-                     data-sec="{{ section.id }}">
+              <video muted loop playsinline preload="metadata" data-vid="{{ forloop.index0 }}" data-sec="{{ section.id }}">
                 <source src="{{ block.settings.video }}" type="video/mp4">
               </video>
             {% elsif block.settings.video_url != blank %}
-              <video muted loop playsinline preload="metadata"
-                     data-vid="{{ forloop.index0 }}" 
-                     data-sec="{{ section.id }}">
+              <video muted loop playsinline preload="metadata" data-vid="{{ forloop.index0 }}" data-sec="{{ section.id }}">
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
               </video>
             {% else %}
-              <div class="videoslider-placeholder">
-                <svg width="50" height="50" viewBox="0 0 50 50">
+              <div class="videoslider-placeholder" aria-label="Ajouter une vidéo">
+                <svg width="46" height="46" viewBox="0 0 50 50" aria-hidden="true">
                   <circle cx="25" cy="25" r="23" fill="#ddd"/>
                   <path d="M20 15L35 25L20 35V15Z" fill="#999"/>
                 </svg>
               </div>
             {% endif %}
-            
-            <div class="videoslider-overlay" onclick="playFullVideo('{{ section.id }}', {{ forloop.index0 }})">
-              <div class="videoslider-playbtn"></div>
-            </div>
+
+            <button class="videoslider-overlay" type="button" aria-label="Lire en grand"
+                    onclick="videoSliderOpen('{{ section.id }}', {{ forloop.index0 }})">
+              <span class="videoslider-playbtn" aria-hidden="true"></span>
+            </button>
           </div>
         {% endfor %}
       </div>
 
-      <button class="videoslider-next" onclick="slideVideo('{{ section.id }}', 'next')">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+      <button class="videoslider-next" type="button" aria-label="Suivant"
+              onclick="videoSliderSlide('{{ section.id }}','next')">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
           <path d="M2 2L8 8L2 14" stroke="#333" stroke-width="2"/>
         </svg>
       </button>
@@ -57,9 +56,11 @@
   </div>
 </div>
 
-<div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}">
-  <div class="videoslider-modalbox">
-    <button class="videoslider-close" onclick="closeFullVideo('{{ section.id }}')">×</button>
+<div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}" aria-hidden="true">
+  <div class="videoslider-modalbox" role="dialog" aria-modal="true">
+    <button class="videoslider-close" type="button" aria-label="Fermer"
+            onclick="videoSliderClose('{{ section.id }}')">×</button>
+
     <video class="videoslider-player" id="video-{{ section.id }}" controls playsinline>
       <source src="" type="video/mp4">
     </video>
@@ -99,37 +100,22 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .videoslider-scroll::-webkit-scrollbar {
-    display: none;
-  }
+  .videoslider-scroll::-webkit-scrollbar { display: none; }
 
-  /* DESKTOP - /2 + encadré */
+  /* CARTES: PAS D'ENCADRÉ BLANC (pas de padding/fond blanc) */
   .videoslider-card {
     min-width: 135px;
     width: 135px;
     height: 205px;
-
     border-radius: 14px;
-    position: relative;
-    cursor: pointer;
-    flex-shrink: 0;
-
-    /* encadré */
-    box-sizing: border-box;
-    padding: 6px;
-    background: rgba(255,255,255,0.9);
-    border: 1px solid rgba(0,0,0,0.08);
-
-    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
-    transition: all 0.25s ease;
     overflow: hidden;
-  }
-
-  .videoslider-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 7px 18px rgba(0,0,0,0.14);
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+    transform: translateZ(0);
   }
 
   .videoslider-card video,
@@ -137,33 +123,25 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-
     background: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 10px; /* arrondi intérieur (cadre + contenu) */
   }
 
   .videoslider-overlay {
     position: absolute;
-    top: 6px;
-    left: 6px;
-    right: 6px;
-    bottom: 6px;
-    border-radius: 10px;
-
+    inset: 0;
+    border: 0;
     background: rgba(0,0,0,0.18);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.3s;
+    cursor: pointer;
+    padding: 0;
   }
 
-  .videoslider-card:hover .videoslider-overlay {
-    background: rgba(0,0,0,0.26);
-  }
+  .videoslider-overlay:hover { background: rgba(0,0,0,0.26); }
 
   .videoslider-playbtn {
     width: 44px;
@@ -171,13 +149,11 @@
     border-radius: 50%;
     background: rgba(255,255,255,0.96);
     position: relative;
-    transition: all 0.3s;
+    display: block;
+    transition: transform 0.2s ease;
   }
 
-  .videoslider-playbtn:hover {
-    transform: scale(1.08);
-    background: #fff;
-  }
+  .videoslider-overlay:hover .videoslider-playbtn { transform: scale(1.06); }
 
   .videoslider-playbtn::after {
     content: '';
@@ -208,25 +184,20 @@
     justify-content: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     z-index: 10;
-    transition: all 0.25s;
+    transition: transform 0.2s ease;
   }
 
   .videoslider-prev:hover,
-  .videoslider-next:hover {
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.18);
-  }
+  .videoslider-next:hover { transform: translateY(-50%) scale(1.08); }
 
   .videoslider-prev { left: 0; }
   .videoslider-next { right: 0; }
 
+  /* MODAL */
   .videoslider-modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0,0,0,0.95);
     z-index: 99999;
     align-items: center;
@@ -234,20 +205,19 @@
     padding: 20px;
   }
 
-  .videoslider-modal.show {
-    display: flex;
-  }
+  .videoslider-modal.show { display: flex; }
 
   .videoslider-modalbox {
     position: relative;
-    max-width: 90%;
+    width: min(980px, 92vw);
     max-height: 90vh;
   }
 
   .videoslider-player {
-    max-width: 100%;
+    width: 100%;
     max-height: 90vh;
     border-radius: 10px;
+    background: #000;
   }
 
   .videoslider-close {
@@ -265,79 +235,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
   }
 
-  .videoslider-close:hover {
-    transform: scale(1.1);
-  }
-
-  /* 📱 MOBILE - /2 + encadré */
+  /* MOBILE */
   @media (max-width: 768px) {
-    .videoslider {
-      padding: 26px 0;
-    }
-
-    .videoslider-title {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
-    .videoslider-container {
-      padding: 0 28px;
-    }
+    .videoslider { padding: 26px 0; }
+    .videoslider-title { font-size: 20px; margin-bottom: 20px; }
+    .videoslider-container { padding: 0 28px; }
+    .videoslider-scroll { gap: 10px; }
 
     .videoslider-card {
       min-width: 93px;
       width: 93px;
       height: 148px;
-
       border-radius: 12px;
-      padding: 5px;
-    }
-
-    .videoslider-card video,
-    .videoslider-placeholder,
-    .videoslider-overlay {
-      border-radius: 9px;
-    }
-
-    .videoslider-overlay {
-      top: 5px;
-      left: 5px;
-      right: 5px;
-      bottom: 5px;
-    }
-
-    .videoslider-scroll {
-      gap: 10px;
     }
 
     .videoslider-prev,
-    .videoslider-next {
-      width: 34px;
-      height: 34px;
-    }
+    .videoslider-next { width: 34px; height: 34px; }
 
     .videoslider-prev svg,
-    .videoslider-next svg {
-      width: 8px;
-      height: 13px;
-    }
+    .videoslider-next svg { width: 8px; height: 13px; }
 
-    .videoslider-playbtn {
-      width: 34px;
-      height: 34px;
-    }
-
+    .videoslider-playbtn { width: 34px; height: 34px; }
     .videoslider-playbtn::after {
       border-left: 10px solid #333;
       border-top: 7px solid transparent;
       border-bottom: 7px solid transparent;
-    }
-
-    .videoslider-card:active {
-      transform: scale(0.97);
     }
 
     .videoslider-close {
@@ -347,99 +271,105 @@
       font-size: 20px;
     }
   }
-
-  @media (max-width: 400px) {
-    .videoslider-container {
-      padding: 0 22px;
-    }
-
-    .videoslider-card {
-      min-width: 86px;
-      width: 86px;
-      height: 136px;
-    }
-  }
 </style>
 
 <script>
-  function getSlideDistance(scrollEl) {
-    const firstCard = scrollEl.querySelector('.videoslider-card');
-    if (!firstCard) return 0;
+  window.__videoSlider = window.__videoSlider || {};
 
-    const cardW = firstCard.getBoundingClientRect().width;
+  function videoSliderDistance(scrollEl) {
+    const first = scrollEl.querySelector('.videoslider-card');
+    if (!first) return 0;
+    const w = first.getBoundingClientRect().width;
     const gapStr = getComputedStyle(scrollEl).gap || '0px';
     const gap = parseFloat(gapStr) || 0;
-
-    return cardW + gap;
+    return w + gap;
   }
 
-  function slideVideo(secId, dir) {
+  function videoSliderSlide(secId, dir) {
     const scroll = document.getElementById('scroll-' + secId);
-    const dist = getSlideDistance(scroll) || 0;
+    if (!scroll) return;
+    const dist = videoSliderDistance(scroll);
+    if (!dist) return;
     scroll.scrollLeft += (dir === 'next' ? dist : -dist);
   }
 
-  function playFullVideo(secId, idx) {
-    const modal = document.getElementById('modal-' + secId);
-    const player = document.getElementById('video-' + secId);
-    const vids = document.querySelectorAll(`[data-sec="${secId}"] video[data-vid]`);
-    
-    if (vids[idx]) {
-      player.querySelector('source').src = vids[idx].querySelector('source').src;
-      player.load();
-      modal.classList.add('show');
-      player.play().catch(() => {});
-      document.body.style.overflow = 'hidden';
-    }
+  function videoSliderVideos(secId) {
+    return Array.from(document.querySelectorAll(`[data-sec="${secId}"] video[data-vid]`));
   }
 
-  function closeFullVideo(secId) {
+  function videoSliderOpen(secId, idx) {
     const modal = document.getElementById('modal-' + secId);
     const player = document.getElementById('video-' + secId);
+    const vids = videoSliderVideos(secId);
+    if (!vids.length || !modal || !player) return;
+
+    const safeIdx = Math.max(0, Math.min(idx, vids.length - 1));
+    window.__videoSlider[secId] = { idx: safeIdx };
+
+    const src = vids[safeIdx].querySelector('source')?.src;
+    if (!src) return;
+
+    player.querySelector('source').src = src;
+    player.load();
+
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    player.play().catch(() => {});
+  }
+
+  function videoSliderClose(secId) {
+    const modal = document.getElementById('modal-' + secId);
+    const player = document.getElementById('video-' + secId);
+    if (!modal || !player) return;
+
     modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+
     player.pause();
     player.currentTime = 0;
     document.body.style.overflow = '';
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.videoslider-modal').forEach(m => {
-      m.addEventListener('click', e => {
-        if (e.target === m) closeFullVideo(m.getAttribute('data-sec'));
+    // Fermer modal en cliquant le fond
+    document.querySelectorAll('.videoslider-modal').forEach(modal => {
+      modal.addEventListener('click', e => {
+        if (e.target === modal) videoSliderClose(modal.getAttribute('data-sec'));
       });
     });
 
+    // ESC
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        const active = document.querySelector('.videoslider-modal.show');
-        if (active) closeFullVideo(active.getAttribute('data-sec'));
-      }
+      if (e.key !== 'Escape') return;
+      const active = document.querySelector('.videoslider-modal.show');
+      if (active) videoSliderClose(active.getAttribute('data-sec'));
     });
 
-    if (window.innerWidth > 768) {
-      document.querySelectorAll('.videoslider-card').forEach(card => {
-        const vid = card.querySelector('video');
-        if (vid) {
-          card.addEventListener('mouseenter', () => vid.play().catch(() => {}));
-          card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
-        }
-      });
-    }
-
+    // Swipe/drag sur le carrousel (doigt) + compatible iOS (passive:false)
     document.querySelectorAll('.videoslider-scroll').forEach(scr => {
-      let stX, scL, drag = false;
+      let dragging = false;
+      let startX = 0;
+      let startScroll = 0;
+
       scr.addEventListener('touchstart', e => {
-        drag = true;
-        stX = e.touches[0].pageX - scr.offsetLeft;
-        scL = scr.scrollLeft;
-      });
+        dragging = true;
+        startX = e.touches[0].pageX;
+        startScroll = scr.scrollLeft;
+      }, { passive: true });
+
       scr.addEventListener('touchmove', e => {
-        if (!drag) return;
+        if (!dragging) return;
+        // empêche le scroll horizontal de "bloquer" sur certains thèmes
         e.preventDefault();
-        const x = e.touches[0].pageX - scr.offsetLeft;
-        scr.scrollLeft = scL - (x - stX) * 1.5;
-      });
-      scr.addEventListener('touchend', () => drag = false);
+        const x = e.touches[0].pageX;
+        const dx = x - startX;
+        scr.scrollLeft = startScroll - dx;
+      }, { passive: false });
+
+      scr.addEventListener('touchend', () => { dragging = false; }, { passive: true });
+      scr.addEventListener('touchcancel', () => { dragging = false; }, { passive: true });
     });
   });
 </script>
@@ -447,47 +377,20 @@
 {% schema %}
 {
   "name": "Carrousel Vidéos",
+  "max_blocks": 50,
   "settings": [
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Titre",
-      "default": "Vous et notre marque"
-    },
-    {
-      "type": "color",
-      "id": "title_color",
-      "label": "Couleur titre",
-      "default": "#333333"
-    },
-    {
-      "type": "font_picker",
-      "id": "title_font",
-      "label": "Police titre",
-      "default": "assistant_n4"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Fond",
-      "default": "#f5f5f5"
-    }
+    { "type": "text", "id": "title", "label": "Titre", "default": "Vous et notre marque" },
+    { "type": "color", "id": "title_color", "label": "Couleur titre", "default": "#333333" },
+    { "type": "font_picker", "id": "title_font", "label": "Police titre", "default": "assistant_n4" },
+    { "type": "color", "id": "background_color", "label": "Fond", "default": "#f5f5f5" }
   ],
   "blocks": [
     {
       "type": "video",
       "name": "Vidéo",
       "settings": [
-        {
-          "type": "video",
-          "id": "video",
-          "label": "Vidéo"
-        },
-        {
-          "type": "url",
-          "id": "video_url",
-          "label": "OU URL vidéo"
-        }
+        { "type": "video", "id": "video", "label": "Vidéo (Shopify)" },
+        { "type": "url", "id": "video_url", "label": "OU URL mp4" }
       ]
     }
   ],
@@ -503,6 +406,7 @@
   ]
 }
 {% endschema %}
+
 
 
 
