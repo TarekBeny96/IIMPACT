@@ -1,7 +1,7 @@
 {% comment %}
-  CARROUSEL VIDÉOS - DIMENSIONS EXACTES MESURÉES
-  Mobile: 300px × 450px (mesuré sur screenshot Ceralyne)
-  Desktop: 270px × 410px
+  CARROUSEL VIDÉOS - DIMENSIONS /2 + ENCADRÉ
+  Mobile (approx /2): 93px × 148px
+  Desktop (/2): 135px × 205px
 {% endcomment %}
 
 <div class="videoslider" data-section-id="{{ section.id }}">
@@ -105,23 +105,31 @@
     display: none;
   }
 
-  /* DESKTOP */
+  /* DESKTOP - /2 + encadré */
   .videoslider-card {
-    min-width: 270px;
-    width: 270px;
-    height: 410px;
-    border-radius: 15px;
-    overflow: hidden;
+    min-width: 135px;
+    width: 135px;
+    height: 205px;
+
+    border-radius: 14px;
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    /* encadré */
+    box-sizing: border-box;
+    padding: 6px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
     transition: all 0.25s ease;
+    overflow: hidden;
   }
 
   .videoslider-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 7px 18px rgba(0,0,0,0.14);
   }
 
   .videoslider-card video,
@@ -129,19 +137,24 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+
     background: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 10px; /* arrondi intérieur (cadre + contenu) */
   }
 
   .videoslider-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.2);
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border-radius: 10px;
+
+    background: rgba(0,0,0,0.18);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,21 +162,21 @@
   }
 
   .videoslider-card:hover .videoslider-overlay {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.26);
   }
 
   .videoslider-playbtn {
-    width: 60px;
-    height: 60px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.96);
     position: relative;
     transition: all 0.3s;
   }
 
   .videoslider-playbtn:hover {
-    transform: scale(1.1);
-    background: white;
+    transform: scale(1.08);
+    background: #fff;
   }
 
   .videoslider-playbtn::after {
@@ -174,9 +187,9 @@
     transform: translate(-38%, -50%);
     width: 0;
     height: 0;
-    border-left: 16px solid #333;
-    border-top: 11px solid transparent;
-    border-bottom: 11px solid transparent;
+    border-left: 12px solid #333;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
   }
 
   .videoslider-prev,
@@ -259,7 +272,7 @@
     transform: scale(1.1);
   }
 
-  /* 📱 MOBILE - DIMENSIONS EXACTES 185×295 */
+  /* 📱 MOBILE - /2 + encadré */
   @media (max-width: 768px) {
     .videoslider {
       padding: 26px 0;
@@ -274,12 +287,26 @@
       padding: 0 28px;
     }
 
-    /* 🎯 EXACTEMENT 185px × 295px comme Ceralyne */
     .videoslider-card {
-      min-width: 185px;
-      width: 185px;
-      height: 295px;
+      min-width: 93px;
+      width: 93px;
+      height: 148px;
+
       border-radius: 12px;
+      padding: 5px;
+    }
+
+    .videoslider-card video,
+    .videoslider-placeholder,
+    .videoslider-overlay {
+      border-radius: 9px;
+    }
+
+    .videoslider-overlay {
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
     }
 
     .videoslider-scroll {
@@ -299,18 +326,18 @@
     }
 
     .videoslider-playbtn {
-      width: 50px;
-      height: 50px;
+      width: 34px;
+      height: 34px;
     }
 
     .videoslider-playbtn::after {
-      border-left: 14px solid #333;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
+      border-left: 10px solid #333;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
     }
 
     .videoslider-card:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
     .videoslider-close {
@@ -327,18 +354,28 @@
     }
 
     .videoslider-card {
-      min-width: 170px;
-      width: 170px;
-      height: 270px;
+      min-width: 86px;
+      width: 86px;
+      height: 136px;
     }
   }
 </style>
 
 <script>
+  function getSlideDistance(scrollEl) {
+    const firstCard = scrollEl.querySelector('.videoslider-card');
+    if (!firstCard) return 0;
+
+    const cardW = firstCard.getBoundingClientRect().width;
+    const gapStr = getComputedStyle(scrollEl).gap || '0px';
+    const gap = parseFloat(gapStr) || 0;
+
+    return cardW + gap;
+  }
+
   function slideVideo(secId, dir) {
     const scroll = document.getElementById('scroll-' + secId);
-    const mobile = window.innerWidth <= 768;
-    const dist = mobile ? 195 : 282;
+    const dist = getSlideDistance(scroll) || 0;
     scroll.scrollLeft += (dir === 'next' ? dist : -dist);
   }
 
@@ -466,3 +503,4 @@
   ]
 }
 {% endschema %}
+
