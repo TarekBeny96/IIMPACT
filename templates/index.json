@@ -183,53 +183,63 @@
         "background_color": "#f5f5f5"
       }
     },
-    "section4_ywE74h": {
+    "section4_4WU7GR": {
       "type": "section4",
       "blocks": {
-        "feature_dcUUWe": {
+        "feature_dHtGdj": {
           "type": "feature",
           "settings": {
-            "text": "Nourishes and hydrates deeply",
-            "show_on_mobile": true
+            "text": "Nourishes and hydrates deeply"
           }
         },
-        "feature_dN7Tgz": {
+        "feature_phdLWc": {
           "type": "feature",
           "settings": {
-            "text": "Targets the causes and structure",
-            "show_on_mobile": true
+            "text": "Targets the causes and structure"
           }
         },
-        "feature_3FVKdi": {
+        "feature_Vhp6fG": {
           "type": "feature",
           "settings": {
-            "text": "Erases dark lines and vibrant",
-            "show_on_mobile": true
+            "text": "Erases dark lines and vibrant"
           }
         }
       },
       "block_order": [
-        "feature_dcUUWe",
-        "feature_dN7Tgz",
-        "feature_3FVKdi"
+        "feature_dHtGdj",
+        "feature_phdLWc",
+        "feature_Vhp6fG"
       ],
-      "name": "Hero #32",
+      "name": "Hero #32 Simple",
       "settings": {
-        "background_color": "#ffffff",
-        "image": "shopify://shop_images/lunette_IA.png",
+        "section_height_desktop": 650,
+        "section_height_tablet": 550,
+        "section_height_mobile": 500,
+        "content_width": 650,
+        "overlay_gradient": "linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%)",
+        "text_alignment": "left",
+        "mobile_text_alignment": "center",
+        "mobile_alignment": "flex-end",
         "show_rating": false,
         "rating_text": "4.6 Excellent",
         "star_color": "#10b981",
-        "heading": "Dites stop au doleur de dos",
+        "heading": "Achieve visibly brighter transformed skin",
+        "heading_tag": "h1",
+        "heading_size": 56,
         "heading_color": "#ffffff",
+        "subheading": "",
+        "subheading_size": 20,
+        "subheading_color": "#ffffff",
         "feature_text_color": "#ffffff",
         "checkmark_bg": "#f97316",
-        "button_label": "LEARN MORE",
+        "button_label": "Je découvre",
         "button_link": "",
-        "button_bg": "#ffffff",
+        "button_bg": "#ffb74a",
         "button_text_color": "#000000",
-        "mobile_heading": "Achieve visibly brighter transformed skin",
-        "mobile_button_label": "Découviri"
+        "button_label_2": "",
+        "button_link_2": "",
+        "button_bg_2": "transparent",
+        "button_text_color_2": "#ffffff"
       }
     }
   },
@@ -239,6 +249,6 @@
     "custom_html_NEXTGc",
     "custom_html_Tifh4V",
     "section_XXfLgd",
-    "section4_ywE74h"
+    "section4_4WU7GR"
   ]
 }
