@@ -1,422 +1,186 @@
 {% comment %}
-  Impact compatible - Video Carousel (small cards)
-  Mobile: 93x148
-  Desktop: 135x205
+  sections/pay-icons-grid.liquid
+  Payment icons grid (Impact compatible)
+  - Auto icons from enabled payment types
+  - Optional extra icons via blocks
 {% endcomment %}
 
-<section class="videoslider videoslider--impact" data-section-id="{{ section.id }}">
-  <div class="videoslider-wrap">
+{% liquid
+  assign sid = section.id
+  assign auto_icons = shop.enabled_payment_types
+%}
+
+<section class="paygrid paygrid--{{ sid }} color-{{ section.settings.color_scheme }}">
+  <div class="paygrid__wrap">
     {% if section.settings.title != blank %}
-      <h2 class="videoslider-title">{{ section.settings.title }}</h2>
+      <h2 class="paygrid__title">{{ section.settings.title }}</h2>
     {% endif %}
 
-    <div class="videoslider-container">
-      <button class="videoslider-prev" type="button" aria-label="Précédent"
-              onclick="videoSliderSlide('{{ section.id }}','prev')">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
-          <path d="M8 2L2 8L8 14" stroke="currentColor" stroke-width="2"/>
-        </svg>
-      </button>
-
-      <div class="videoslider-scroll" id="scroll-{{ section.id }}" role="list">
-        {% for block in section.blocks %}
-          <div class="videoslider-card" role="listitem" {{ block.shopify_attributes }}>
-            {% assign mp4 = '' %}
-            {% if block.settings.video != blank %}
-              {% assign mp4 = block.settings.video %}
-            {% elsif block.settings.video_url != blank %}
-              {% assign mp4 = block.settings.video_url %}
-            {% endif %}
-
-            {% if mp4 != blank %}
-              <video class="videoslider-thumb" muted loop playsinline preload="metadata">
-                <source src="{{ mp4 }}" type="video/mp4">
-              </video>
-            {% else %}
-              <div class="videoslider-placeholder" aria-label="Ajouter une vidéo">
-                <svg width="46" height="46" viewBox="0 0 50 50" aria-hidden="true">
-                  <circle cx="25" cy="25" r="23" fill="#ddd"/>
-                  <path d="M20 15L35 25L20 35V15Z" fill="#999"/>
-                </svg>
-              </div>
-            {% endif %}
-
-            <button class="videoslider-overlay" type="button" aria-label="Lire en grand"
-                    onclick="videoSliderOpen('{{ section.id }}', {{ forloop.index0 }})">
-              <span class="videoslider-playbtn" aria-hidden="true"></span>
-            </button>
+    <div class="paygrid__grid" aria-label="Payment methods">
+      {%- if section.settings.show_auto_icons -%}
+        {%- for type in auto_icons -%}
+          <div class="paygrid__item" title="{{ type | replace: '_', ' ' | upcase }}">
+            {{ type | payment_type_svg_tag: class: 'paygrid__svg' }}
           </div>
-        {% endfor %}
-      </div>
+        {%- endfor -%}
+      {%- endif -%}
 
-      <button class="videoslider-next" type="button" aria-label="Suivant"
-              onclick="videoSliderSlide('{{ section.id }}','next')">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
-          <path d="M2 2L8 8L2 14" stroke="currentColor" stroke-width="2"/>
-        </svg>
-      </button>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'icon' and block.settings.image != blank -%}
+          <div class="paygrid__item" {{ block.shopify_attributes }}>
+            {{
+              block.settings.image
+              | image_url: width: 160
+              | image_tag:
+                loading: 'lazy',
+                decoding: 'async',
+                class: 'paygrid__img',
+                alt: block.settings.label | escape
+            }}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
     </div>
   </div>
 </section>
 
-<div class="videoslider-modal" id="modal-{{ section.id }}" data-sec="{{ section.id }}" aria-hidden="true">
-  <div class="videoslider-modalbox" role="dialog" aria-modal="true">
-    <button class="videoslider-close" type="button" aria-label="Fermer"
-            onclick="videoSliderClose('{{ section.id }}')">×</button>
-
-    <video class="videoslider-player" id="video-{{ section.id }}" controls playsinline>
-      <source src="" type="video/mp4">
-    </video>
-  </div>
-</div>
-
 <style>
-  /* Impact can override a lot; keep selectors scoped + !important on layout lines only */
-  .videoslider--impact {
-    padding: 30px 0;
-    background: {{ section.settings.background_color }};
+  .paygrid--{{ sid }}{
+    --pg-max: {{ section.settings.max_width }}px;
+    --pg-gap-m: {{ section.settings.gap_mobile }}px;
+    --pg-gap-d: {{ section.settings.gap_desktop }}px;
+    --pg-cols-m: {{ section.settings.cols_mobile }};
+    --pg-cols-d: {{ section.settings.cols_desktop }};
+    --pg-radius: {{ section.settings.card_radius }}px;
+    --pg-pad: {{ section.settings.card_padding }}px;
+    --pg-icon: {{ section.settings.icon_size }}px;
+    --pg-border: {{ section.settings.border_opacity | divided_by: 100.0 }};
   }
 
-  .videoslider--impact .videoslider-wrap {
-    max-width: 1400px;
+  .paygrid--{{ sid }} .paygrid__wrap{
+    max-width: var(--pg-max);
     margin: 0 auto;
-    padding: 0 15px;
-  }
-
-  .videoslider--impact .videoslider-title {
+    padding: {{ section.settings.padding_top_mobile }}px 15px {{ section.settings.padding_bottom_mobile }}px;
     text-align: center;
-    font-size: 22px;
-    font-weight: 300;
-    margin-bottom: 24px;
-    color: {{ section.settings.title_color }};
-    font-family: {{ section.settings.title_font.family }}, sans-serif;
   }
 
-  .videoslider--impact .videoslider-container {
-    position: relative;
-    padding: 0 40px;
+  @media (min-width: 990px){
+    .paygrid--{{ sid }} .paygrid__wrap{
+      padding: {{ section.settings.padding_top_desktop }}px 15px {{ section.settings.padding_bottom_desktop }}px;
+    }
   }
 
-  /* FORCE horizontal list even if Impact applies grid/stack styles */
-  .videoslider--impact .videoslider-scroll {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-
-    gap: 12px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch;
-
-    touch-action: pan-x;
-    padding: 2px 0; /* avoids shadow clipping */
+  .paygrid--{{ sid }} .paygrid__title{
+    margin: 0 0 18px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    font-size: {{ section.settings.title_size_mobile }}px;
+    color: rgb(var(--color-foreground));
   }
 
-  .videoslider--impact .videoslider-scroll::-webkit-scrollbar { display: none; }
-
-  /* Small cards - NO white frame */
-  .videoslider--impact .videoslider-card {
-    min-width: 135px;
-    width: 135px;
-    height: 205px;
-
-    border-radius: 14px;
-    overflow: hidden;
-    position: relative;
-
-    flex: 0 0 auto !important;
-    margin: 0 !important;
-
-    background: transparent !important;
-    border: 0 !important;
-    padding: 0 !important;
-
-    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+  @media (min-width: 990px){
+    .paygrid--{{ sid }} .paygrid__title{
+      font-size: {{ section.settings.title_size_desktop }}px;
+      margin-bottom: 22px;
+    }
   }
 
-  .videoslider--impact .videoslider-thumb,
-  .videoslider--impact .videoslider-placeholder {
+  .paygrid--{{ sid }} .paygrid__grid{
+    display: grid;
+    grid-template-columns: repeat(var(--pg-cols-m), minmax(0, 1fr));
+    gap: var(--pg-gap-m);
+    align-items: center;
+    justify-items: center;
+  }
+
+  @media (min-width: 990px){
+    .paygrid--{{ sid }} .paygrid__grid{
+      grid-template-columns: repeat(var(--pg-cols-d), minmax(0, 1fr));
+      gap: var(--pg-gap-d);
+    }
+  }
+
+  .paygrid--{{ sid }} .paygrid__item{
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    background: #f0f0f0;
+    max-width: 120px;
+    background: #fff;
+    border-radius: var(--pg-radius);
+    padding: var(--pg-pad);
+    border: 1px solid rgba(0,0,0,var(--pg-border));
+    box-shadow: 0 10px 22px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: calc(var(--pg-icon) + var(--pg-pad) * 2);
   }
 
-  .videoslider--impact .videoslider-overlay {
-    position: absolute;
-    inset: 0;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    background: rgba(0,0,0,0.18);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .videoslider--impact .videoslider-overlay:hover { background: rgba(0,0,0,0.26); }
-
-  .videoslider--impact .videoslider-playbtn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.96);
-    position: relative;
+  .paygrid--{{ sid }} .paygrid__svg{
+    width: var(--pg-icon);
+    height: auto;
     display: block;
   }
 
-  .videoslider--impact .videoslider-playbtn::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-38%, -50%);
-    width: 0;
-    height: 0;
-    border-left: 12px solid #333;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-  }
-
-  .videoslider--impact .videoslider-prev,
-  .videoslider--impact .videoslider-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #fff;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-    z-index: 10;
-    color: #333;
-  }
-
-  .videoslider--impact .videoslider-prev { left: 0; }
-  .videoslider--impact .videoslider-next { right: 0; }
-
-  /* Modal */
-  .videoslider-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 99999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .videoslider-modal.show { display: flex; }
-
-  .videoslider-modalbox {
-    position: relative;
-    width: min(980px, 92vw);
-    max-height: 90vh;
-  }
-
-  .videoslider-player {
-    width: 100%;
-    max-height: 90vh;
-    border-radius: 10px;
-    background: #000;
-  }
-
-  .videoslider-close {
-    position: absolute;
-    top: -48px;
-    right: 0;
-    background: #fff;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 24px;
-    font-weight: 300;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media (max-width: 768px) {
-    .videoslider--impact { padding: 26px 0; }
-    .videoslider--impact .videoslider-title { font-size: 20px; margin-bottom: 20px; }
-    .videoslider--impact .videoslider-container { padding: 0 28px; }
-
-    .videoslider--impact .videoslider-scroll { gap: 10px !important; }
-
-    .videoslider--impact .videoslider-card {
-      min-width: 93px;
-      width: 93px;
-      height: 148px;
-      border-radius: 12px;
-    }
-
-    .videoslider--impact .videoslider-prev,
-    .videoslider--impact .videoslider-next {
-      width: 34px;
-      height: 34px;
-    }
-
-    .videoslider--impact .videoslider-playbtn {
-      width: 34px;
-      height: 34px;
-    }
-
-    .videoslider--impact .videoslider-playbtn::after {
-      border-left: 10px solid #333;
-      border-top: 7px solid transparent;
-      border-bottom: 7px solid transparent;
-    }
-
-    .videoslider-close {
-      top: -42px;
-      width: 36px;
-      height: 36px;
-      font-size: 20px;
-    }
+  .paygrid--{{ sid }} .paygrid__img{
+    width: var(--pg-icon);
+    height: auto;
+    display: block;
   }
 </style>
 
-<script>
-  window.__videoSlider = window.__videoSlider || {};
-
-  function videoSliderDistance(scrollEl) {
-    const first = scrollEl.querySelector('.videoslider-card');
-    if (!first) return 0;
-    const w = first.getBoundingClientRect().width;
-    const gapStr = getComputedStyle(scrollEl).gap || '0px';
-    const gap = parseFloat(gapStr) || 0;
-    return w + gap;
-  }
-
-  function videoSliderSlide(secId, dir) {
-    const scroll = document.getElementById('scroll-' + secId);
-    if (!scroll) return;
-    const dist = videoSliderDistance(scroll);
-    if (!dist) return;
-    scroll.scrollLeft += (dir === 'next' ? dist : -dist);
-  }
-
-  function videoSliderSources(secId) {
-    return Array.from(document.querySelectorAll(`[data-section-id="${secId}"] .videoslider-card video source`))
-      .map(s => s.getAttribute('src'))
-      .filter(Boolean);
-  }
-
-  function videoSliderOpen(secId, idx) {
-    const modal = document.getElementById('modal-' + secId);
-    const player = document.getElementById('video-' + secId);
-    const sources = videoSliderSources(secId);
-    if (!modal || !player || !sources.length) return;
-
-    const safeIdx = Math.max(0, Math.min(idx, sources.length - 1));
-    window.__videoSlider[secId] = { idx: safeIdx };
-
-    player.querySelector('source').src = sources[safeIdx];
-    player.load();
-
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    player.play().catch(() => {});
-  }
-
-  function videoSliderClose(secId) {
-    const modal = document.getElementById('modal-' + secId);
-    const player = document.getElementById('video-' + secId);
-    if (!modal || !player) return;
-
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
-
-    player.pause();
-    player.currentTime = 0;
-    document.body.style.overflow = '';
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    // close on backdrop click
-    document.querySelectorAll('.videoslider-modal').forEach(modal => {
-      modal.addEventListener('click', e => {
-        if (e.target === modal) videoSliderClose(modal.getAttribute('data-sec'));
-      });
-    });
-
-    // ESC
-    document.addEventListener('keydown', e => {
-      if (e.key !== 'Escape') return;
-      const active = document.querySelector('.videoslider-modal.show');
-      if (active) videoSliderClose(active.getAttribute('data-sec'));
-    });
-
-    // swipe/drag on carousel (Impact needs passive:false to allow preventDefault)
-    document.querySelectorAll('.videoslider-scroll').forEach(scr => {
-      let dragging = false;
-      let startX = 0;
-      let startScroll = 0;
-
-      scr.addEventListener('touchstart', e => {
-        dragging = true;
-        startX = e.touches[0].pageX;
-        startScroll = scr.scrollLeft;
-      }, { passive: true });
-
-      scr.addEventListener('touchmove', e => {
-        if (!dragging) return;
-        e.preventDefault();
-        const x = e.touches[0].pageX;
-        scr.scrollLeft = startScroll - (x - startX);
-      }, { passive: false });
-
-      scr.addEventListener('touchend', () => { dragging = false; }, { passive: true });
-      scr.addEventListener('touchcancel', () => { dragging = false; }, { passive: true });
-    });
-  });
-</script>
-
 {% schema %}
 {
-  "name": "Carrousel Vidéos (Impact)",
-  "max_blocks": 50,
+  "name": "Pay icons grid",
   "settings": [
-    { "type": "text", "id": "title", "label": "Titre", "default": "Vous et notre marque" },
-    { "type": "color", "id": "title_color", "label": "Couleur titre", "default": "#333333" },
-    { "type": "font_picker", "id": "title_font", "label": "Police titre", "default": "assistant_n4" },
-    { "type": "color", "id": "background_color", "label": "Fond", "default": "#f5f5f5" }
+    { "type": "text", "id": "title", "label": "Title", "default": "Safe payment on our website" },
+
+    { "type": "checkbox", "id": "show_auto_icons", "label": "Show Shopify payment icons automatically", "default": true },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max width (px)", "min": 600, "max": 1600, "step": 20, "default": 1200 },
+
+    { "type": "range", "id": "cols_mobile", "label": "Columns mobile", "min": 2, "max": 5, "step": 1, "default": 3 },
+    { "type": "range", "id": "cols_desktop", "label": "Columns desktop", "min": 4, "max": 8, "step": 1, "default": 5 },
+
+    { "type": "range", "id": "gap_mobile", "label": "Gap mobile (px)", "min": 6, "max": 24, "step": 1, "default": 12 },
+    { "type": "range", "id": "gap_desktop", "label": "Gap desktop (px)", "min": 8, "max": 30, "step": 1, "default": 18 },
+
+    { "type": "header", "content": "Cards" },
+    { "type": "range", "id": "card_radius", "label": "Card radius (px)", "min": 0, "max": 24, "step": 1, "default": 8 },
+    { "type": "range", "id": "card_padding", "label": "Card padding (px)", "min": 6, "max": 22, "step": 1, "default": 10 },
+    { "type": "range", "id": "border_opacity", "label": "Border opacity (%)", "min": 0, "max": 20, "step": 1, "default": 8 },
+
+    { "type": "header", "content": "Icons" },
+    { "type": "range", "id": "icon_size", "label": "Icon size (px)", "min": 36, "max": 90, "step": 1, "default": 62 },
+
+    { "type": "header", "content": "Text" },
+    { "type": "range", "id": "title_size_mobile", "label": "Title size mobile (px)", "min": 14, "max": 32, "step": 1, "default": 22 },
+    { "type": "range", "id": "title_size_desktop", "label": "Title size desktop (px)", "min": 16, "max": 42, "step": 1, "default": 28 },
+
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Padding top mobile (px)", "min": 0, "max": 120, "step": 4, "default": 16 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Padding bottom mobile (px)", "min": 0, "max": 120, "step": 4, "default": 16 },
+    { "type": "range", "id": "padding_top_desktop", "label": "Padding top desktop (px)", "min": 0, "max": 160, "step": 4, "default": 24 },
+    { "type": "range", "id": "padding_bottom_desktop", "label": "Padding bottom desktop (px)", "min": 0, "max": 160, "step": 4, "default": 24 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "background-1" }
   ],
   "blocks": [
     {
-      "type": "video",
-      "name": "Vidéo",
+      "type": "icon",
+      "name": "Extra icon",
       "settings": [
-        { "type": "video", "id": "video", "label": "Vidéo (Shopify)" },
-        { "type": "url", "id": "video_url", "label": "OU URL mp4" }
+        { "type": "image_picker", "id": "image", "label": "Icon image" },
+        { "type": "text", "id": "label", "label": "Alt text", "default": "Payment method" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Carrousel Vidéos (Impact)",
-      "blocks": [
-        { "type": "video" },
-        { "type": "video" },
-        { "type": "video" }
-      ]
+      "name": "Pay icons grid",
+      "blocks": []
     }
   ]
 }
 {% endschema %}
+
