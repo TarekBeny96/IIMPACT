@@ -1,0 +1,408 @@
+{% comment %}
+  sections/hero-32.liquid
+  Hero #32 - Impact 6.4.1 compatible (scoped CSS)
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign bg = section.settings.background_image
+  assign phone = section.settings.phone_image
+  assign heading = section.settings.heading
+  assign text = section.settings.text
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+-%}
+
+<section class="hero32 hero32--{{ sid }} color-{{ section.settings.color_scheme }}">
+  <div class="hero32__wrap hero32__pad">
+    <div class="hero32__card">
+      <div class="hero32__media">
+        {% if bg != blank %}
+          {{
+            bg
+            | image_url: width: 2200
+            | image_tag:
+              loading: 'lazy',
+              decoding: 'async',
+              class: 'hero32__bg',
+              widths: '750, 1100, 1500, 2200',
+              sizes: '(min-width: 990px) 72vw, 92vw',
+              alt: bg.alt | escape
+          }}
+        {% else %}
+          <div class="hero32__bg hero32__bg--placeholder" aria-hidden="true"></div>
+        {% endif %}
+
+        <div class="hero32__content">
+          {% if heading != blank %}
+            <h2 class="hero32__heading">{{ heading }}</h2>
+          {% endif %}
+
+          {% if text != blank %}
+            <div class="hero32__text rte">{{ text }}</div>
+          {% endif %}
+
+          {% if button_label != blank and button_link != blank %}
+            <a class="hero32__btn" href="{{ button_link }}">
+              {{ button_label }}
+            </a>
+          {% endif %}
+        </div>
+
+        {% if phone != blank %}
+          <div class="hero32__phone" aria-hidden="true">
+            {{
+              phone
+              | image_url: width: 900
+              | image_tag:
+                loading: 'lazy',
+                decoding: 'async',
+                class: 'hero32__phoneImg',
+                widths: '320, 480, 640, 900',
+                sizes: '(min-width: 990px) 260px, 200px',
+                alt: phone.alt | escape
+            }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero32--{{ sid }} {
+    --hero32-radius: {{ section.settings.radius }}px;
+    --hero32-shadow: 0 12px 30px rgba(0,0,0,0.10);
+    --hero32-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+
+  .hero32--{{ sid }} .hero32__pad {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  @media (min-width: 990px) {
+    .hero32--{{ sid }} .hero32__pad {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  .hero32--{{ sid }} .hero32__wrap {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .hero32--{{ sid }} .hero32__card {
+    border-radius: var(--hero32-radius);
+    overflow: hidden;
+    box-shadow: var(--hero32-shadow);
+    background: rgb(var(--color-background));
+  }
+
+  .hero32--{{ sid }} .hero32__media {
+    position: relative;
+    width: 100%;
+    min-height: {{ section.settings.mobile_height }}px;
+  }
+
+  @media (min-width: 990px) {
+    .hero32--{{ sid }} .hero32__media {
+      min-height: {{ section.settings.desktop_height }}px;
+    }
+  }
+
+  .hero32--{{ sid }} .hero32__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero32--{{ sid }} .hero32__bg--placeholder {
+    background: linear-gradient(135deg, rgba(0,0,0,0.08), rgba(0,0,0,0.02));
+  }
+
+  /* overlay léger pour lisibilité texte */
+  .hero32--{{ sid }} .hero32__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,var(--hero32-overlay));
+    pointer-events: none;
+  }
+
+  .hero32--{{ sid }} .hero32__content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(620px, 78%);
+    padding: 22px 22px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    z-index: 2;
+    color: rgb(var(--color-foreground));
+  }
+
+  @media (min-width: 990px) {
+    .hero32--{{ sid }} .hero32__content {
+      padding: 40px 44px;
+      width: min(680px, 60%);
+    }
+  }
+
+  .hero32--{{ sid }} .hero32__heading {
+    margin: 0;
+    line-height: 1.05;
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 990px) {
+    .hero32--{{ sid }} .hero32__heading {
+      font-size: 44px;
+    }
+  }
+
+  .hero32--{{ sid }} .hero32__text {
+    max-width: 46ch;
+    font-size: 14px;
+    opacity: 0.95;
+  }
+
+  @media (min-width: 990px) {
+    .hero32--{{ sid }} .hero32__text {
+      font-size: 16px;
+    }
+  }
+
+  .hero32--{{ sid }} .hero32__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 10px 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    background: {{ section.settings.button_bg }};
+    color: {{ section.settings.button_text }};
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: transform .15s ease, opacity .15s ease;
+  }
+
+  .hero32--{{ sid }} .hero32__btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+  }
+
+  /* “Téléphone” comme dans la capture (superposé à droite) */
+  .hero32--{{ sid }} .hero32__phone {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    width: 170px;
+    z-index: 3;
+    filter: drop-shadow(0 14px 25px rgba(0,0,0,0.25));
+    pointer-events: none;
+  }
+
+  @media (min-width: 990px) {
+    .hero32--{{ sid }} .hero32__phone {
+      right: 28px;
+      bottom: 18px;
+      width: 260px;
+    }
+  }
+
+  .hero32--{{ sid }} .hero32__phoneImg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 18px;
+  }
+
+  /* Mobile: garde le look “carte” + contenu lisible */
+  @media (max-width: 749px) {
+    .hero32--{{ sid }} .hero32__content {
+      width: 82%;
+      padding: 18px;
+    }
+  }
+
+  /* Respect Impact: éviter de casser les styles globales du thème */
+  .hero32--{{ sid }} .rte p { margin: 0; }
+</style>
+
+{% schema %}
+{
+  "name": "Hero #32 (Impact)",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "phone_image",
+      "label": "Phone overlay image (mockup)"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Achieve visibly brighter transformed skin"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Reduce the look of fine lines and improve tone and texture.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "LEARN MORE"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height (px)",
+      "min": 380,
+      "max": 900,
+      "step": 10,
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height (px)",
+      "min": 260,
+      "max": 700,
+      "step": 10,
+      "default": 360
+    },
+    {
+      "type": "range",
+      "id": "radius",
+      "label": "Card radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity (%)",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 900,
+      "max": 1600,
+      "step": 20,
+      "default": 1400
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top desktop (px)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom desktop (px)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#111111"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero #32 (Impact)"
+    }
+  ]
+}
+{% endschema %}
