@@ -75,6 +75,52 @@
         "button_text_color_2": "#ffffff"
       }
     },
+    "seection_9LU3RW": {
+      "type": "seection",
+      "name": "Icônes de Paiement",
+      "settings": {
+        "section_padding_top": 70,
+        "section_padding_bottom": 40,
+        "mobile_padding_top": 0,
+        "mobile_padding_bottom": 0,
+        "container_width": 1250,
+        "background_color": "#ffffff",
+        "alignment": "center",
+        "mobile_alignment": "center",
+        "heading": "Paiement 100 sécurisé",
+        "heading_size": 12,
+        "mobile_heading_size": 10,
+        "heading_color": "#1a1a1a",
+        "heading_weight": "500",
+        "heading_transform": "uppercase",
+        "heading_spacing": 8,
+        "icon_height": 32,
+        "mobile_icon_height": 24,
+        "icon_spacing": 16,
+        "mobile_icon_spacing": 14,
+        "icon_opacity": 100,
+        "show_amex": true,
+        "show_apple_pay": true,
+        "show_google_pay": true,
+        "show_mastercard": true,
+        "show_paypal": true,
+        "show_shop_pay": true,
+        "show_visa": true
+      }
+    },
+    "custom_liquid_pwN6Yb": {
+      "type": "custom-liquid",
+      "name": "Custom Liquid",
+      "settings": {
+        "full_width": true,
+        "remove_vertical_spacing": false,
+        "remove_horizontal_spacing": false,
+        "liquid": "",
+        "background": "",
+        "background_gradient": "",
+        "text_color": ""
+      }
+    },
     "image-link-blocks": {
       "type": "image-link-blocks",
       "blocks": {
@@ -200,19 +246,6 @@
         "heading_gradient": ""
       }
     },
-    "custom_liquid_pwN6Yb": {
-      "type": "custom-liquid",
-      "name": "Custom Liquid",
-      "settings": {
-        "full_width": true,
-        "remove_vertical_spacing": false,
-        "remove_horizontal_spacing": false,
-        "liquid": "",
-        "background": "",
-        "background_gradient": "",
-        "text_color": ""
-      }
-    },
     "custom_html_NEXTGc": {
       "type": "custom-html",
       "name": "Custom HTML",
@@ -237,39 +270,6 @@
         "background": "#ffffff",
         "background_gradient": "",
         "text_color": ""
-      }
-    },
-    "seection_9LU3RW": {
-      "type": "seection",
-      "name": "Icônes de Paiement",
-      "settings": {
-        "section_padding_top": 70,
-        "section_padding_bottom": 40,
-        "mobile_padding_top": 0,
-        "mobile_padding_bottom": 0,
-        "container_width": 1250,
-        "background_color": "#ffffff",
-        "alignment": "center",
-        "mobile_alignment": "center",
-        "heading": "Paiement 100 sécurisé",
-        "heading_size": 12,
-        "mobile_heading_size": 10,
-        "heading_color": "#666666",
-        "heading_weight": "500",
-        "heading_transform": "uppercase",
-        "heading_spacing": 20,
-        "icon_height": 32,
-        "mobile_icon_height": 24,
-        "icon_spacing": 16,
-        "mobile_icon_spacing": 14,
-        "icon_opacity": 80,
-        "show_amex": true,
-        "show_apple_pay": true,
-        "show_google_pay": true,
-        "show_mastercard": true,
-        "show_paypal": true,
-        "show_shop_pay": true,
-        "show_visa": true
       }
     }
   },
