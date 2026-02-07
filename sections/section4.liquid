@@ -1,162 +1,108 @@
 {% comment %}
-  Hero #32 - Split Hero with Mobile Preview
+  Hero #32 - Version Simple et Épurée
   Compatible avec Impact 6.4.1
-  Créé pour Shopify OS 2.0
+  Shopify OS 2.0
 {% endcomment %}
 
-<section class="hero-32" data-section-id="{{ section.id }}" style="background-color: {{ section.settings.background_color }};">
-  <div class="hero-32__container">
-    <div class="hero-32__wrapper">
+<section class="hero-32-simple" data-section-id="{{ section.id }}">
+  <div class="hero-32-simple__container">
+    <div class="hero-32-simple__image-wrapper">
       
-      {%- comment -%} CÔTÉ GAUCHE - Image principale + Contenu {%- endcomment -%}
-      <div class="hero-32__left">
-        <div class="hero-32__image-wrapper">
-          {%- if section.settings.image != blank -%}
-            {%- assign image_height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio | round -%}
-            {{ section.settings.image | image_url: width: 1200 | image_tag:
-              loading: 'lazy',
-              width: section.settings.image.width,
-              height: image_height,
-              sizes: '(min-width: 990px) 70vw, 100vw',
-              widths: '375, 550, 750, 1100, 1200',
-              class: 'hero-32__image'
-            }}
-          {%- else -%}
-            <div class="hero-32__placeholder">
-              {{ 'lifestyle-1' | placeholder_svg_tag: 'hero-32__placeholder-svg' }}
+      {%- comment -%} Image de fond {%- endcomment -%}
+      {%- if section.settings.image != blank -%}
+        {%- assign image_height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio | round -%}
+        {{ section.settings.image | image_url: width: 1920 | image_tag:
+          loading: 'lazy',
+          width: section.settings.image.width,
+          height: image_height,
+          sizes: '100vw',
+          widths: '375, 550, 750, 1100, 1500, 1780, 1920',
+          class: 'hero-32-simple__image'
+        }}
+      {%- else -%}
+        <div class="hero-32-simple__placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'hero-32-simple__placeholder-svg' }}
+        </div>
+      {%- endif -%}
+      
+      {%- comment -%} Overlay avec contenu {%- endcomment -%}
+      <div class="hero-32-simple__overlay" style="background: {{ section.settings.overlay_gradient }};">
+        <div class="hero-32-simple__content" style="text-align: {{ section.settings.text_alignment }};">
+          
+          {%- comment -%} Rating {%- endcomment -%}
+          {%- if section.settings.show_rating -%}
+            <div class="hero-32-simple__rating">
+              <div class="hero-32-simple__stars">
+                {%- for i in (1..5) -%}
+                  <svg class="hero-32-simple__star" width="18" height="18" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 0L9.79611 5.52786H15.6085L10.9062 8.94427L12.7023 14.4721L8 11.0557L3.29772 14.4721L5.09383 8.94427L0.391548 5.52786H6.20389L8 0Z" fill="{{ section.settings.star_color }}"/>
+                  </svg>
+                {%- endfor -%}
+              </div>
+              {%- if section.settings.rating_text != blank -%}
+                <span class="hero-32-simple__rating-text">{{ section.settings.rating_text }}</span>
+              {%- endif -%}
             </div>
           {%- endif -%}
           
-          {%- comment -%} Overlay avec contenu {%- endcomment -%}
-          <div class="hero-32__content">
-            
-            {%- comment -%} Rating {%- endcomment -%}
-            {%- if section.settings.show_rating -%}
-              <div class="hero-32__rating">
-                <div class="hero-32__stars">
-                  {%- for i in (1..5) -%}
-                    <svg class="hero-32__star" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 0L9.79611 5.52786H15.6085L10.9062 8.94427L12.7023 14.4721L8 11.0557L3.29772 14.4721L5.09383 8.94427L0.391548 5.52786H6.20389L8 0Z" fill="{{ section.settings.star_color }}"/>
+          {%- comment -%} Titre principal {%- endcomment -%}
+          {%- if section.settings.heading != blank -%}
+            <{{ section.settings.heading_tag }} class="hero-32-simple__heading" style="color: {{ section.settings.heading_color }};">
+              {{ section.settings.heading }}
+            </{{ section.settings.heading_tag }}>
+          {%- endif -%}
+          
+          {%- comment -%} Sous-titre {%- endcomment -%}
+          {%- if section.settings.subheading != blank -%}
+            <p class="hero-32-simple__subheading" style="color: {{ section.settings.subheading_color }};">
+              {{ section.settings.subheading }}
+            </p>
+          {%- endif -%}
+          
+          {%- comment -%} Liste de features {%- endcomment -%}
+          {%- if section.blocks.size > 0 -%}
+            <ul class="hero-32-simple__features">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'feature' -%}
+                  <li class="hero-32-simple__feature" {{ block.shopify_attributes }}>
+                    <svg class="hero-32-simple__checkmark" width="22" height="22" viewBox="0 0 20 20" fill="none">
+                      <circle cx="10" cy="10" r="10" fill="{{ section.settings.checkmark_bg }}"/>
+                      <path d="M6 10L9 13L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                  {%- endfor -%}
-                </div>
-                {%- if section.settings.rating_text != blank -%}
-                  <span class="hero-32__rating-text">{{ section.settings.rating_text }}</span>
+                    <span style="color: {{ section.settings.feature_text_color }};">{{ block.settings.text }}</span>
+                  </li>
                 {%- endif -%}
-              </div>
-            {%- endif -%}
-            
-            {%- comment -%} Titre principal {%- endcomment -%}
-            {%- if section.settings.heading != blank -%}
-              <h2 class="hero-32__heading" style="color: {{ section.settings.heading_color }};">
-                {{ section.settings.heading }}
-              </h2>
-            {%- endif -%}
-            
-            {%- comment -%} Liste de features {%- endcomment -%}
-            {%- if section.blocks.size > 0 -%}
-              <ul class="hero-32__features">
-                {%- for block in section.blocks -%}
-                  {%- if block.type == 'feature' -%}
-                    <li class="hero-32__feature" {{ block.shopify_attributes }}>
-                      <svg class="hero-32__checkmark" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="10" r="10" fill="{{ section.settings.checkmark_bg }}"/>
-                        <path d="M6 10L9 13L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                      <span style="color: {{ section.settings.feature_text_color }};">{{ block.settings.text }}</span>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-            {%- endif -%}
-            
-            {%- comment -%} Bouton CTA {%- endcomment -%}
-            {%- if section.settings.button_label != blank -%}
-              <div class="hero-32__button-wrapper">
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          
+          {%- comment -%} Boutons CTA {%- endcomment -%}
+          {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+            <div class="hero-32-simple__buttons">
+              
+              {%- if section.settings.button_label != blank -%}
                 <a 
                   href="{{ section.settings.button_link | default: '#' }}" 
-                  class="hero-32__button"
+                  class="hero-32-simple__button hero-32-simple__button--primary"
                   style="background-color: {{ section.settings.button_bg }}; color: {{ section.settings.button_text_color }};"
                 >
                   {{ section.settings.button_label }}
                 </a>
-              </div>
-            {%- endif -%}
-            
-          </div>
-        </div>
-      </div>
-      
-      {%- comment -%} CÔTÉ DROIT - Preview mobile {%- endcomment -%}
-      <div class="hero-32__right">
-        <div class="hero-32__mobile-mockup">
-          <div class="hero-32__mobile-frame">
-            <div class="hero-32__mobile-notch"></div>
-            <div class="hero-32__mobile-content">
-              
-              {%- if section.settings.mobile_image != blank -%}
-                {%- assign mobile_height = section.settings.mobile_image.width | divided_by: section.settings.mobile_image.aspect_ratio | round -%}
-                {{ section.settings.mobile_image | image_url: width: 400 | image_tag:
-                  loading: 'lazy',
-                  width: section.settings.mobile_image.width,
-                  height: mobile_height,
-                  class: 'hero-32__mobile-image'
-                }}
-              {%- else -%}
-                <div class="hero-32__mobile-placeholder">
-                  {{ 'lifestyle-2' | placeholder_svg_tag }}
-                </div>
               {%- endif -%}
               
-              {%- comment -%} Contenu mobile overlay {%- endcomment -%}
-              <div class="hero-32__mobile-overlay">
-                
-                {%- if section.settings.show_rating -%}
-                  <div class="hero-32__mobile-rating">
-                    <div class="hero-32__stars hero-32__stars--small">
-                      {%- for i in (1..5) -%}
-                        <svg class="hero-32__star" width="12" height="12" viewBox="0 0 16 16" fill="none">
-                          <path d="M8 0L9.79611 5.52786H15.6085L10.9062 8.94427L12.7023 14.4721L8 11.0557L3.29772 14.4721L5.09383 8.94427L0.391548 5.52786H6.20389L8 0Z" fill="{{ section.settings.star_color }}"/>
-                        </svg>
-                      {%- endfor -%}
-                    </div>
-                    {%- if section.settings.rating_text != blank -%}
-                      <span class="hero-32__mobile-rating-text">{{ section.settings.rating_text }}</span>
-                    {%- endif -%}
-                  </div>
-                {%- endif -%}
-                
-                {%- if section.settings.mobile_heading != blank -%}
-                  <h3 class="hero-32__mobile-heading">{{ section.settings.mobile_heading }}</h3>
-                {%- endif -%}
-                
-                {%- if section.blocks.size > 0 -%}
-                  <ul class="hero-32__mobile-features">
-                    {%- for block in section.blocks -%}
-                      {%- if block.type == 'feature' and block.settings.show_on_mobile -%}
-                        <li class="hero-32__mobile-feature">
-                          <svg class="hero-32__checkmark hero-32__checkmark--small" width="14" height="14" viewBox="0 0 20 20" fill="none">
-                            <circle cx="10" cy="10" r="10" fill="{{ section.settings.checkmark_bg }}"/>
-                            <path d="M6 10L9 13L14 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>
-                          <span>{{ block.settings.text }}</span>
-                        </li>
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </ul>
-                {%- endif -%}
-                
-                {%- if section.settings.mobile_button_label != blank -%}
-                  <div class="hero-32__mobile-button-wrapper">
-                    <a href="{{ section.settings.button_link | default: '#' }}" class="hero-32__mobile-button">
-                      {{ section.settings.mobile_button_label }}
-                    </a>
-                  </div>
-                {%- endif -%}
-                
-              </div>
+              {%- if section.settings.button_label_2 != blank -%}
+                <a 
+                  href="{{ section.settings.button_link_2 | default: '#' }}" 
+                  class="hero-32-simple__button hero-32-simple__button--secondary"
+                  style="background-color: {{ section.settings.button_bg_2 }}; color: {{ section.settings.button_text_color_2 }}; border-color: {{ section.settings.button_text_color_2 }};"
+                >
+                  {{ section.settings.button_label_2 }}
+                </a>
+              {%- endif -%}
+              
             </div>
-          </div>
+          {%- endif -%}
+          
         </div>
       </div>
       
@@ -165,405 +111,388 @@
 </section>
 
 <style>
-  .hero-32 {
+  .hero-32-simple {
     width: 100%;
-    padding: 0;
+    position: relative;
     overflow: hidden;
   }
 
-  .hero-32__container {
-    max-width: 100%;
+  .hero-32-simple__container {
+    width: 100%;
     margin: 0 auto;
   }
 
-  .hero-32__wrapper {
-    display: grid;
-    grid-template-columns: 70% 30%;
-    min-height: 600px;
-    position: relative;
-  }
-
-  /* PARTIE GAUCHE - Image + Contenu */
-  .hero-32__left {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-32__image-wrapper {
+  .hero-32-simple__image-wrapper {
     position: relative;
     width: 100%;
-    height: 100%;
+    min-height: {{ section.settings.section_height_desktop }}px;
   }
 
-  .hero-32__image,
-  .hero-32__placeholder {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .hero-32__placeholder {
-    background: #f0f0f0;
-  }
-
-  .hero-32__placeholder-svg {
-    width: 100%;
-    height: 100%;
-    opacity: 0.3;
-  }
-
-  /* Overlay de contenu */
-  .hero-32__content {
+  .hero-32-simple__image,
+  .hero-32-simple__placeholder {
     position: absolute;
     top: 0;
     left: 0;
-    right: 30%;
-    bottom: 0;
-    padding: 60px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-32-simple__placeholder {
+    background: #f0f0f0;
+  }
+
+  .hero-32-simple__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+  }
+
+  /* Overlay */
+  .hero-32-simple__overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    background: linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 100%);
+    padding: 40px;
+  }
+
+  .hero-32-simple__content {
+    max-width: {{ section.settings.content_width }}px;
+    width: 100%;
   }
 
   /* Rating */
-  .hero-32__rating {
-    display: flex;
+  .hero-32-simple__rating {
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 8px 16px;
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
   }
 
-  .hero-32__stars {
+  .hero-32-simple__stars {
     display: flex;
     gap: 4px;
   }
 
-  .hero-32__star {
-    width: 16px;
-    height: 16px;
+  .hero-32-simple__star {
+    width: 18px;
+    height: 18px;
   }
 
-  .hero-32__rating-text {
+  .hero-32-simple__rating-text {
     font-size: 14px;
     font-weight: 600;
     color: white;
-    background: rgba(0,0,0,0.5);
-    padding: 4px 10px;
-    border-radius: 12px;
   }
 
   /* Heading */
-  .hero-32__heading {
-    font-size: clamp(32px, 5vw, 56px);
+  .hero-32-simple__heading {
+    font-size: clamp(36px, 6vw, {{ section.settings.heading_size }}px);
     font-weight: 700;
-    line-height: 1.15;
-    margin: 0 0 30px 0;
-    max-width: 500px;
+    line-height: 1.1;
+    margin: 0 0 20px 0;
+    letter-spacing: -0.02em;
+  }
+
+  /* Subheading */
+  .hero-32-simple__subheading {
+    font-size: clamp(16px, 2vw, {{ section.settings.subheading_size }}px);
+    font-weight: 400;
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+    opacity: 0.95;
   }
 
   /* Features list */
-  .hero-32__features {
+  .hero-32-simple__features {
     list-style: none;
     padding: 0;
-    margin: 0 0 35px 0;
+    margin: 0 0 40px 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
 
-  .hero-32__feature {
+  .hero-32-simple__feature {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 16px;
-    font-weight: 400;
+    gap: 14px;
+    font-size: clamp(15px, 1.5vw, 18px);
+    font-weight: 500;
   }
 
-  .hero-32__checkmark {
+  .hero-32-simple__checkmark {
     flex-shrink: 0;
   }
 
-  /* Button */
-  .hero-32__button-wrapper {
-    margin-top: 10px;
+  /* Buttons */
+  .hero-32-simple__buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
-  .hero-32__button {
+  .hero-32-simple__button {
     display: inline-block;
-    padding: 14px 32px;
-    font-size: 13px;
+    padding: 16px 36px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     text-decoration: none;
-    border-radius: 25px;
+    border-radius: 30px;
     transition: all 0.3s ease;
-    border: none;
     cursor: pointer;
+    border: 2px solid transparent;
   }
 
-  .hero-32__button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  .hero-32-simple__button--primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   }
 
-  /* PARTIE DROITE - Mobile mockup */
-  .hero-32__right {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    background: #f5f5f5;
+  .hero-32-simple__button--secondary {
+    background: transparent !important;
   }
 
-  .hero-32__mobile-mockup {
-    position: relative;
-    max-width: 300px;
-    width: 100%;
+  .hero-32-simple__button--secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-3px);
   }
 
-  .hero-32__mobile-frame {
-    position: relative;
-    aspect-ratio: 9 / 19.5;
-    background: #000;
-    border-radius: 36px;
-    padding: 12px;
-    box-shadow: 
-      0 0 0 2px #1a1a1a,
-      0 0 0 4px #000,
-      0 20px 60px rgba(0,0,0,0.4);
-  }
-
-  .hero-32__mobile-notch {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 28px;
-    background: #000;
-    border-radius: 0 0 18px 18px;
-    z-index: 10;
-  }
-
-  .hero-32__mobile-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: white;
-    border-radius: 26px;
-    overflow: hidden;
-  }
-
-  .hero-32__mobile-image,
-  .hero-32__mobile-placeholder {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .hero-32__mobile-overlay {
-    position: absolute;
-    inset: 0;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 50%);
-  }
-
-  .hero-32__mobile-rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-
-  .hero-32__stars--small .hero-32__star {
-    width: 12px;
-    height: 12px;
-  }
-
-  .hero-32__mobile-rating-text {
-    font-size: 11px;
-    font-weight: 600;
-    color: white;
-    background: rgba(0,0,0,0.5);
-    padding: 3px 8px;
-    border-radius: 10px;
-  }
-
-  .hero-32__mobile-heading {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1.2;
-    color: white;
-    margin: 0 0 16px 0;
-  }
-
-  .hero-32__mobile-features {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 20px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .hero-32__mobile-feature {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: white;
-  }
-
-  .hero-32__checkmark--small {
-    width: 14px;
-    height: 14px;
-  }
-
-  .hero-32__mobile-button {
-    display: inline-block;
-    padding: 10px 24px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    background: white;
-    color: #333;
-    text-decoration: none;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-  }
-
-  .hero-32__mobile-button:hover {
-    background: #f0f0f0;
-  }
-
-  /* RESPONSIVE - TABLETTES */
+  /* RESPONSIVE - TABLETTE */
   @media screen and (max-width: 1024px) {
-    .hero-32__wrapper {
-      grid-template-columns: 65% 35%;
+    .hero-32-simple__image-wrapper {
+      min-height: {{ section.settings.section_height_tablet }}px;
     }
 
-    .hero-32__content {
-      padding: 40px;
-      right: 35%;
+    .hero-32-simple__overlay {
+      padding: 30px;
     }
 
-    .hero-32__heading {
-      font-size: 36px;
+    .hero-32-simple__heading {
+      font-size: 42px;
+    }
+
+    .hero-32-simple__subheading {
+      font-size: 18px;
     }
   }
 
   /* RESPONSIVE - MOBILE */
   @media screen and (max-width: 768px) {
-    .hero-32__wrapper {
-      grid-template-columns: 1fr;
-      min-height: auto;
+    .hero-32-simple__image-wrapper {
+      min-height: {{ section.settings.section_height_mobile }}px;
     }
 
-    .hero-32__left {
-      min-height: 500px;
+    .hero-32-simple__overlay {
+      padding: 24px 20px;
+      align-items: {{ section.settings.mobile_alignment }};
     }
 
-    .hero-32__content {
-      right: 0;
-      padding: 30px 20px;
-      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
-      justify-content: flex-end;
+    .hero-32-simple__content {
+      text-align: {{ section.settings.mobile_text_alignment }};
     }
 
-    .hero-32__heading {
-      font-size: 28px;
-      max-width: 100%;
+    .hero-32-simple__rating {
+      margin-bottom: 20px;
+      padding: 6px 12px;
     }
 
-    .hero-32__features {
-      margin-bottom: 25px;
+    .hero-32-simple__star {
+      width: 14px;
+      height: 14px;
     }
 
-    .hero-32__feature {
-      font-size: 14px;
+    .hero-32-simple__rating-text {
+      font-size: 12px;
     }
 
-    /* Masquer le mockup mobile sur mobile */
-    .hero-32__right {
-      display: none;
+    .hero-32-simple__heading {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .hero-32-simple__subheading {
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    .hero-32-simple__features {
+      margin-bottom: 32px;
+      gap: 12px;
+    }
+
+    .hero-32-simple__feature {
+      font-size: 15px;
+      gap: 12px;
+    }
+
+    .hero-32-simple__checkmark {
+      width: 18px;
+      height: 18px;
+    }
+
+    .hero-32-simple__buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .hero-32-simple__button {
+      width: 100%;
+      text-align: center;
+      padding: 14px 28px;
+      font-size: 13px;
     }
   }
 
   @media screen and (max-width: 480px) {
-    .hero-32__heading {
-      font-size: 24px;
+    .hero-32-simple__heading {
+      font-size: 28px;
     }
 
-    .hero-32__content {
-      padding: 25px 16px;
-    }
-
-    .hero-32__button {
-      padding: 12px 28px;
-      font-size: 12px;
+    .hero-32-simple__subheading {
+      font-size: 15px;
     }
   }
 </style>
 
 {% schema %}
 {
-  "name": "Hero #32",
+  "name": "Hero #32 Simple",
   "tag": "section",
-  "class": "section-hero-32",
+  "class": "section-hero-32-simple",
   "settings": [
     {
       "type": "header",
-      "content": "🎨 Apparence générale"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Couleur de fond",
-      "default": "#ffffff"
-    },
-    {
-      "type": "header",
-      "content": "📸 Image principale (gauche)"
+      "content": "📸 Image"
     },
     {
       "type": "image_picker",
       "id": "image",
       "label": "Image de fond",
-      "info": "Recommandé: 1200x800px minimum"
+      "info": "Recommandé: 1920x800px minimum. Format 16:9 ou 21:9"
     },
     {
       "type": "header",
-      "content": "⭐ Notation"
+      "content": "📐 Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "section_height_desktop",
+      "min": 400,
+      "max": 900,
+      "step": 50,
+      "unit": "px",
+      "label": "Hauteur Desktop",
+      "default": 650
+    },
+    {
+      "type": "range",
+      "id": "section_height_tablet",
+      "min": 350,
+      "max": 700,
+      "step": 50,
+      "unit": "px",
+      "label": "Hauteur Tablette",
+      "default": 550
+    },
+    {
+      "type": "range",
+      "id": "section_height_mobile",
+      "min": 300,
+      "max": 600,
+      "step": 50,
+      "unit": "px",
+      "label": "Hauteur Mobile",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Largeur max du contenu",
+      "default": 650
+    },
+    {
+      "type": "header",
+      "content": "🎨 Overlay"
+    },
+    {
+      "type": "text",
+      "id": "overlay_gradient",
+      "label": "Gradient d'overlay",
+      "default": "linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%)",
+      "info": "CSS gradient. Ex: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alignement texte (Desktop)",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right", "label": "Droite" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_alignment",
+      "label": "Alignement texte (Mobile)",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right", "label": "Droite" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Position contenu (Mobile)",
+      "options": [
+        { "value": "flex-start", "label": "Haut" },
+        { "value": "center", "label": "Centre" },
+        { "value": "flex-end", "label": "Bas" }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "header",
+      "content": "⭐ Rating"
     },
     {
       "type": "checkbox",
       "id": "show_rating",
-      "label": "Afficher la notation",
+      "label": "Afficher le rating",
       "default": true
     },
     {
       "type": "text",
       "id": "rating_text",
-      "label": "Texte de notation",
+      "label": "Texte rating",
       "default": "4.6 Excellent"
     },
     {
       "type": "color",
       "id": "star_color",
-      "label": "Couleur des étoiles",
+      "label": "Couleur étoiles",
       "default": "#10b981"
     },
     {
       "type": "header",
-      "content": "📝 Contenu principal"
+      "content": "📝 Titre"
     },
     {
       "type": "textarea",
@@ -572,10 +501,60 @@
       "default": "Achieve visibly brighter transformed skin"
     },
     {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Balise titre",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 32,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Taille titre (Desktop)",
+      "default": 56
+    },
+    {
       "type": "color",
       "id": "heading_color",
-      "label": "Couleur du titre",
+      "label": "Couleur titre",
       "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "📄 Sous-titre"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sous-titre"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 14,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "label": "Taille sous-titre",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Couleur sous-titre",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "✅ Features"
     },
     {
       "type": "color",
@@ -591,52 +570,56 @@
     },
     {
       "type": "header",
-      "content": "🔘 Bouton principal"
+      "content": "🔘 Bouton Principal"
     },
     {
       "type": "text",
       "id": "button_label",
-      "label": "Texte du bouton",
+      "label": "Texte bouton",
       "default": "LEARN MORE"
     },
     {
       "type": "url",
       "id": "button_link",
-      "label": "Lien du bouton"
+      "label": "Lien bouton"
     },
     {
       "type": "color",
       "id": "button_bg",
-      "label": "Couleur fond bouton",
+      "label": "Fond bouton",
       "default": "#ffffff"
     },
     {
       "type": "color",
       "id": "button_text_color",
-      "label": "Couleur texte bouton",
+      "label": "Texte bouton",
       "default": "#000000"
     },
     {
       "type": "header",
-      "content": "📱 Preview mobile (droite)"
-    },
-    {
-      "type": "image_picker",
-      "id": "mobile_image",
-      "label": "Image mobile",
-      "info": "Même image ou différente pour le mockup"
+      "content": "🔘 Bouton Secondaire (optionnel)"
     },
     {
       "type": "text",
-      "id": "mobile_heading",
-      "label": "Titre mobile",
-      "default": "Achieve visibly brighter transformed skin"
+      "id": "button_label_2",
+      "label": "Texte bouton 2"
     },
     {
-      "type": "text",
-      "id": "mobile_button_label",
-      "label": "Texte bouton mobile",
-      "default": "LEARN MORE"
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Lien bouton 2"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_2",
+      "label": "Fond bouton 2",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color_2",
+      "label": "Texte bouton 2",
+      "default": "#ffffff"
     }
   ],
   "blocks": [
@@ -649,19 +632,13 @@
           "id": "text",
           "label": "Texte",
           "default": "Nourishes and hydrates deeply"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_on_mobile",
-          "label": "Afficher sur mobile preview",
-          "default": true
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Hero #32",
+      "name": "Hero #32 Simple",
       "category": "Hero",
       "blocks": [
         {
