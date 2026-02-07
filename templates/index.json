@@ -71,7 +71,7 @@
         "button_text_color": "#000000",
         "button_label_2": "",
         "button_link_2": "",
-        "button_bg_2": "transparent",
+        "button_bg_2": "rgba(0,0,0,0)",
         "button_text_color_2": "#ffffff"
       }
     },
@@ -248,6 +248,39 @@
         "title_font": "assistant_n4",
         "background_color": "#f5f5f5"
       }
+    },
+    "seection_9LU3RW": {
+      "type": "seection",
+      "name": "Icônes de Paiement",
+      "settings": {
+        "section_padding_top": 40,
+        "section_padding_bottom": 40,
+        "mobile_padding_top": 30,
+        "mobile_padding_bottom": 30,
+        "container_width": 1200,
+        "background_color": "#ffffff",
+        "alignment": "center",
+        "mobile_alignment": "center",
+        "heading": "",
+        "heading_size": 14,
+        "mobile_heading_size": 12,
+        "heading_color": "#666666",
+        "heading_weight": "500",
+        "heading_transform": "uppercase",
+        "heading_spacing": 20,
+        "icon_height": 24,
+        "mobile_icon_height": 20,
+        "icon_spacing": 16,
+        "mobile_icon_spacing": 12,
+        "icon_opacity": 80,
+        "show_amex": true,
+        "show_apple_pay": true,
+        "show_google_pay": true,
+        "show_mastercard": true,
+        "show_paypal": true,
+        "show_shop_pay": true,
+        "show_visa": true
+      }
     }
   },
   "order": [
@@ -256,6 +289,7 @@
     "custom_liquid_pwN6Yb",
     "custom_html_NEXTGc",
     "custom_html_Tifh4V",
-    "section_XXfLgd"
+    "section_XXfLgd",
+    "seection_9LU3RW"
   ]
 }
